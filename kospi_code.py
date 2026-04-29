@@ -31,8 +31,8 @@ def get_kospi_master_dataframe(base_dir):
     tmp_fil1 = os.path.join(base_dir, "kospi_code_part1.tmp")
     tmp_fil2 = os.path.join(base_dir, "kospi_code_part2.tmp")
 
-    wf1 = open(tmp_fil1, mode="w")
-    wf2 = open(tmp_fil2, mode="w")
+    wf1 = open(tmp_fil1, mode="w", encoding="cp949")
+    wf2 = open(tmp_fil2, mode="w", encoding="cp949")
 
     with open(file_name, mode="r", encoding="cp949") as f:
         for row in f:
@@ -82,7 +82,7 @@ def get_kospi_master_dataframe(base_dir):
                      '시가총액', '그룹사코드', '회사신용한도초과', '담보대출가능', '대주가능'
                      ]
 
-    df2 = pd.read_fwf(tmp_fil2, widths=field_specs, names=part2_columns)
+    df2 = pd.read_fwf(tmp_fil2, widths=field_specs, names=part2_columns, encoding='cp949')
 
     df = pd.merge(df1, df2, how='outer', left_index=True, right_index=True)
 
@@ -96,7 +96,7 @@ def get_kospi_master_dataframe(base_dir):
 
     return df
 
-kospi_master_download(base_dir)
+kospi_master_download(base_dir, verbose = True)
 df = get_kospi_master_dataframe(base_dir) 
 
 df3 = df
