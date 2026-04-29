@@ -10,6 +10,14 @@ import sqlite3
 
 import pandas as pd
 
+from schema import (
+    COLUMNS,
+    CREATE_TABLE_SQL,
+    DROP_TABLE_SQL,
+    INSERT_SQL,
+    TABLE_NAME,
+)
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "tickers.db")
 KOSPI_XLSX = os.path.join(BASE_DIR, "kospi_code.xlsx")
@@ -34,35 +42,21 @@ def load_kospi(xlsx_path: str) -> pd.DataFrame:
         "asset_type": df["그룹코드"].map(ASSET_TYPE_MAP).values,
         "currency": "KRW",
     })
-    return out
+    return out[list(COLUMNS)]
 
 
 def init_db(db_path: str) -> sqlite3.Connection:
     conn = sqlite3.connect(db_path)
     cur = conn.cursor()
-    cur.execute("DROP TABLE IF EXISTS tickers;")
-    cur.execute(
-        """
-        CREATE TABLE tickers (
-            ticker     TEXT PRIMARY KEY,
-            exchange   TEXT NOT NULL,
-            alias      TEXT,
-            asset_type TEXT NOT NULL,
-            currency   TEXT NOT NULL
-        );
-        """
-    )
+    cur.execute(DROP_TABLE_SQL)
+    cur.execute(CREATE_TABLE_SQL)
     conn.commit()
     return conn
 
 
 def bulk_insert(conn: sqlite3.Connection, df: pd.DataFrame) -> int:
     cur = conn.cursor()
-    cur.executemany(
-        "INSERT INTO tickers (ticker, exchange, alias, asset_type, currency) "
-        "VALUES (?, ?, ?, ?, ?)",
-        df.itertuples(index=False, name=None),
-    )
+    cur.executemany(INSERT_SQL, df.itertuples(index=False, name=None))
     conn.commit()
     return len(df)
 
@@ -79,12 +73,13 @@ def main() -> None:
         cur = conn.cursor()
         print("asset_type | count")
         for asset_type, count in cur.execute(
-            "SELECT asset_type, COUNT(*) FROM tickers GROUP BY asset_type ORDER BY asset_type;"
+            f"SELECT asset_type, COUNT(*) FROM {TABLE_NAME} "
+            "GROUP BY asset_type ORDER BY asset_type;"
         ):
             print(f"{asset_type:<10} | {count}")
 
         print("sample:")
-        for row in cur.execute("SELECT * FROM tickers LIMIT 5;"):
+        for row in cur.execute(f"SELECT * FROM {TABLE_NAME} LIMIT 5;"):
             print("  " + " | ".join(str(v) for v in row))
     finally:
         conn.close()
