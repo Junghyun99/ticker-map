@@ -41,35 +41,22 @@ def get_overseas_master_dataframe(base_dir,val):
     print(f"Downloading...{val}mst.cod")
     # df = pd.read_table(base_dir+f"\\{val}mst.cod",sep='\t',encoding='cp949')
     df = pd.read_table(os.path.join(base_dir, f"{val}mst.cod"), sep='\t',encoding='cp949')
+    print(f"Actual columns: {len(df.columns)}")
+    if len(df.columns) != len(columns):
+        raise ValueError(f"Column count mismatch: expected {len(columns)}, got {len(df.columns)}")
     df.columns = columns
     df.to_excel(f'{val}_code.xlsx',index=False)  # 현재 위치에 엑셀파일로 저장
+    print("Excel saved")
 
     
     return df
 
-cmd = input("1:전부 다운로드, 2:1개의 시장을 다운로드 \n")
-
-if cmd =='1': # 1. 해외종목코드전체 코드를 다운로드
-    
-    # 순서대로 나스닥, 뉴욕, 아멕스, 상해, 상해지수, 심천, 심천지수, 도쿄, 홍콩, 하노이, 호치민
-    lst = ['nas','nys','ams','shs','shi','szs','szi','tse','hks','hnx','hsx'] 
-
-    DF=pd.DataFrame()
-    for i in lst:
-        temp = get_overseas_master_dataframe(base_dir,i)
-        DF = pd.concat([DF,temp],axis=0)
-    print(f"Downloading...overseas_stock_code(all).xlsx")
-    DF.to_excel('overseas_stock_code(all).xlsx',index=False)  # 전체 통합파일
-    print("Done")
-
-elif cmd =='2': # 2. 해외종목코드 전체 코드를 다운로드
-    
-    while True:
-        cmd2 = input("다운로드하시고자 하는 시장의 코드를 입력하여 주세요. \nnas:나스닥, nys:뉴욕, ams:아멕스, shs:상해, shi:상해지수, szs:심천, szi:심천지수, tse:도쿄, hks:홍콩, hnx:하노이, hsx:호치민\n")
-
-        try:
-            df = get_overseas_master_dataframe(base_dir,cmd2)
-            print("Done")
-            break;
-        except:
-            pass
+try:
+    df = get_overseas_master_dataframe(base_dir,'nas')
+    print("Done nas")
+    df = get_overseas_master_dataframe(base_dir,'nys')
+    print("Done nys")
+    df = get_overseas_master_dataframe(base_dir,'ams')
+    print("Done ams")
+except Exception as e:
+    print(f"An error occurred: {e}")
