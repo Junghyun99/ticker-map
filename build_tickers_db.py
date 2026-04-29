@@ -20,9 +20,10 @@ ASSET_TYPE_MAP = {"ST": "Stock", "EF": "ETF"}
 def load_kospi(xlsx_path: str) -> pd.DataFrame:
     raw = pd.read_excel(
         xlsx_path,
+        usecols=["단축코드", "한글명", "그룹코드"],
         dtype={"단축코드": str, "그룹코드": str, "한글명": str},
     )
-    df = raw[["단축코드", "한글명", "그룹코드"]].dropna()
+    df = raw.dropna()
     df = df[df["그룹코드"].isin(ASSET_TYPE_MAP)]
     df = df[df["단축코드"].str.len() == 6]
 
@@ -56,18 +57,14 @@ def init_db(db_path: str) -> sqlite3.Connection:
 
 
 def bulk_insert(conn: sqlite3.Connection, df: pd.DataFrame) -> int:
-    rows = list(
-        df[["ticker", "exchange", "alias", "asset_type", "currency"]]
-        .itertuples(index=False, name=None)
-    )
     cur = conn.cursor()
     cur.executemany(
         "INSERT INTO tickers (ticker, exchange, alias, asset_type, currency) "
         "VALUES (?, ?, ?, ?, ?)",
-        rows,
+        df.itertuples(index=False, name=None),
     )
     conn.commit()
-    return cur.rowcount
+    return len(df)
 
 
 def main() -> None:
