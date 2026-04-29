@@ -1,5 +1,3 @@
 pandas
-pyarrow
 yfinance
-requests
-urllib3
+openpyxl
