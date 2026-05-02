@@ -45,12 +45,15 @@ def test_kospi_transforms_to_ticker_schema():
     out = to_ticker_df(raw, KOSPI)
 
     assert list(out.columns) == list(COLUMNS)
-    # 6자리 + asset_type ∈ {ST, EF} + non-null 만 통과 (TOOLONG, None alias 제외)
-    assert out["ticker"].tolist() == ["000020", "000040", "999999"]
+    # 6자리 + asset_type ∈ {ST, EF} 만 통과 (TOOLONG 제외).
+    # alias 는 Optional 이라 None 이어도 행은 유지된다 (111111).
+    assert out["ticker"].tolist() == ["000020", "000040", "999999", "111111"]
     assert (out["exchange"] == "KS").all()
     assert (out["currency"] == "KRW").all()
-    assert out["asset_type"].tolist() == ["Stock", "Stock", "ETF"]
-    assert out["alias"].tolist() == ["동화약품", "KR모터스", "지수상품"]
+    assert out["asset_type"].tolist() == ["Stock", "Stock", "ETF", "Stock"]
+    aliases = out["alias"].tolist()
+    assert aliases[:3] == ["동화약품", "KR모터스", "지수상품"]
+    assert pd.isna(aliases[3])  # None → pandas NaN 으로 변환됨
 
 
 def test_kosdaq_renames_columns_before_transform():
@@ -60,9 +63,9 @@ def test_kosdaq_renames_columns_before_transform():
     assert list(out.columns) == list(COLUMNS)
     assert (out["exchange"] == "KQ").all()
     assert (out["currency"] == "KRW").all()
-    # KOSDAQ 도 동일한 6자리 + ST/EF 정책
-    assert out["ticker"].tolist() == ["000020", "000040", "999999"]
-    assert out["asset_type"].tolist() == ["Stock", "Stock", "ETF"]
+    # KOSDAQ 도 동일한 6자리 + ST/EF 정책 (alias 누락 행도 유지)
+    assert out["ticker"].tolist() == ["000020", "000040", "999999", "111111"]
+    assert out["asset_type"].tolist() == ["Stock", "Stock", "ETF", "Stock"]
 
 
 @pytest.mark.parametrize("cfg, expected_code", [(NAS, "NAS"), (NYS, "NAS"), (AMS, "NAS")])
@@ -79,17 +82,19 @@ def test_overseas_uses_dynamic_exchange_and_currency(cfg, expected_code):
     assert out["asset_type"].tolist() == ["Stock", "ETF", "Stock"]
 
 
-def test_overseas_drops_null_rows():
+def test_overseas_drops_rows_with_null_required_fields():
+    # Symbol(ticker)/Exchange code/currency 가 null 이면 제거. alias 는 해외에서 Symbol 과
+    # 동일하므로 사실상 ticker null 검사와 같다.
     raw = pd.DataFrame(
         {
-            "Symbol": ["AAPL", None, "MSFT"],
-            "Exchange code": ["NAS", "NAS", "NAS"],
-            OVERSEAS_SECTYPE_COL: [2, 2, 2],
-            "currency": ["USD", "USD", "USD"],
+            "Symbol": ["AAPL", None, "MSFT", "GOOG"],
+            "Exchange code": ["NAS", "NAS", "NAS", None],
+            OVERSEAS_SECTYPE_COL: [2, 2, 2, 2],
+            "currency": ["USD", "USD", None, "USD"],
         }
     )
     out = to_ticker_df(raw, NAS)
-    assert out["ticker"].tolist() == ["AAPL", "MSFT"]
+    assert out["ticker"].tolist() == ["AAPL"]
 
 
 def test_kr_filters_non_st_ef_group_codes():

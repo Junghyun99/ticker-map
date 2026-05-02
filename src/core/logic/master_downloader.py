@@ -35,7 +35,9 @@ def _download_and_extract(url: str, work_dir: Path, logger: Optional[ILogger]) -
     """URL 의 zip 을 work_dir 에 다운로드/해제하고 풀린 파일 경로 리스트 반환."""
     zip_path = work_dir / Path(url).name
     _log(logger, f"[download] {url}")
-    # DWS 서버 인증서 이슈 회피: verify=False (기존 ssl._create_unverified_context 와 동등)
+    # DWS 서버의 인증서 체인 이슈로 verify=False 가 불가피하다. 기존 코드의 글로벌
+    # ssl._create_unverified_context 보다는 호출 단위로 한정되어 영향 범위가 좁다.
+    # MITM 위험은 인지하고 있으며, 다운로드 데이터는 zip 압축 해제·검증되는 마스터 파일이다.
     with requests.get(url, stream=True, verify=False, timeout=60) as resp:
         resp.raise_for_status()
         with open(zip_path, "wb") as f:
@@ -68,23 +70,25 @@ def download_kr_master(
     with tempfile.TemporaryDirectory() as tmp:
         work_dir = Path(tmp)
         extracted = _download_and_extract(url, work_dir, logger)
-        mst_path = next(p for p in extracted if p.suffix == ".mst")
+        mst_path = next((p for p in extracted if p.suffix == ".mst"), None)
+        if mst_path is None:
+            raise FileNotFoundError(f"No .mst file found in {url}")
 
-        part1_path = work_dir / f"{slug}_part1.tmp"
+        # part1 은 한글명에 쉼표가 포함될 가능성을 고려해 임시 CSV 대신 메모리 리스트로 보관한다.
+        # part2 는 고정폭 포맷이므로 파일로 저장 후 pd.read_fwf 로 읽는다.
         part2_path = work_dir / f"{slug}_part2.tmp"
+        part1_rows: list[list[str]] = []
 
         with open(mst_path, mode="r", encoding="cp949") as f, \
-             open(part1_path, mode="w", encoding="cp949") as wf1, \
              open(part2_path, mode="w", encoding="cp949") as wf2:
             for row in f:
+                if len(row) <= byte_size:
+                    continue
                 rf1 = row[0:len(row) - byte_size]
-                col1 = rf1[0:9].rstrip()
-                col2 = rf1[9:21].rstrip()
-                col3 = rf1[21:].strip()
-                wf1.write(f"{col1},{col2},{col3}\n")
+                part1_rows.append([rf1[0:9].rstrip(), rf1[9:21].rstrip(), rf1[21:].strip()])
                 wf2.write(row[-byte_size:])
 
-        df1 = pd.read_csv(part1_path, header=None, names=part1_columns, encoding="cp949")
+        df1 = pd.DataFrame(part1_rows, columns=part1_columns)
         df2 = pd.read_fwf(part2_path, widths=field_specs, names=part2_columns, encoding="cp949")
         df = pd.merge(df1, df2, how="outer", left_index=True, right_index=True)
 
@@ -110,7 +114,9 @@ def download_overseas_master(
     with tempfile.TemporaryDirectory() as tmp:
         work_dir = Path(tmp)
         extracted = _download_and_extract(url, work_dir, logger)
-        cod_path = extracted[0]
+        cod_path = next((p for p in extracted if p.suffix == ".cod"), None)
+        if cod_path is None:
+            raise FileNotFoundError(f"No .cod file found in {url}")
 
         df = pd.read_table(cod_path, sep="\t", encoding="cp949")
         if len(df.columns) != len(columns):

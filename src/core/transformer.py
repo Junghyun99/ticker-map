@@ -12,7 +12,14 @@ from src.core.schema import COLUMNS
 
 def to_ticker_df(raw: pd.DataFrame, cfg: ExchangeConfig) -> pd.DataFrame:
     df = raw.rename(columns=cfg.pre_rename) if cfg.pre_rename else raw
-    df = df.dropna()
+    # alias 는 schema 상 Optional 이라 필수 컬럼만 검사한다 (ticker, asset_type).
+    # 해외는 exchange/currency 도 데이터에서 가져오므로 함께 필수.
+    required = [cfg.src_ticker_col, cfg.src_asset_type_col]
+    if cfg.src_exchange_col:
+        required.append(cfg.src_exchange_col)
+    if cfg.src_currency_col:
+        required.append(cfg.src_currency_col)
+    df = df.dropna(subset=required)
     df = df[df[cfg.src_asset_type_col].isin(cfg.asset_type_map)]
 
     if cfg.ticker_len_filter is not None:
