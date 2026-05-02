@@ -28,8 +28,8 @@ jobs:
           pip install -r requirements.txt;
 
       # 4. 파이썬 스크립트 실행
-      - name: Run kospi_code.py
-        run: python kospi_code.py
+      - name: Run kospi downloader
+        run: python -m src.core.logic.kospi_code
 
       # 5. 생성된 엑셀 파일을 저장소에 커밋 및 푸시
       - name: Commit and push changes
@@ -37,15 +37,15 @@ jobs:
           # Git 봇 계정 설정
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          
+
           # 엑셀 파일 추가
-          git add kospi_code.xlsx
-          
+          git add data/kospi_code.xlsx
+
           # 변경 사항이 있는 경우에만 커밋 (에러 방지)
           if ! git diff --staged --quiet; then
             git commit -m "Auto-update KOSPI master data (Excel)"
             git push
-            echo "Successfully updated and pushed kospi_code.xlsx"
+            echo "Successfully updated and pushed data/kospi_code.xlsx"
           else
             echo "No changes detected in KOSPI data."
           fi

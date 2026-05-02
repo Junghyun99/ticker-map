@@ -1,4 +1,4 @@
 pandas
-yfinance
 openpyxl
 python-dotenv
+requests
