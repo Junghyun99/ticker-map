@@ -6,26 +6,22 @@ import pandas as pd
 
 base_dir = os.getcwd()
 
-def kospi_master_download(base_dir, verbose=False):
-    cwd = os.getcwd()
-    if (verbose): print(f"current directory is {cwd}")
+def get_kospi_master_dataframe(base_dir):
     ssl._create_default_https_context = ssl._create_unverified_context
-
-    # 변경: os.path.join을 사용하여 OS에 맞는 올바른 경로 생성
-    zip_path = os.path.join(base_dir, "kospi_code.zip")
-    urllib.request.urlretrieve("https://new.real.download.dws.co.kr/common/master/kospi_code.mst.zip", zip_path)
-
-    os.chdir(base_dir)
-    if (verbose): print(f"change directory to {base_dir}")
     
-    kospi_zip = zipfile.ZipFile('kospi_code.zip')
+    zip_file_path = os.path.join(base_dir, "kospi_code.mst.zip")
+    
+    # 항상 최신 파일 다운로드
+    print("Downloading kospi_code.mst.zip...")
+    urllib.request.urlretrieve("https://new.real.download.dws.co.kr/common/master/kospi_code.mst.zip", zip_file_path)
+    
+    os.chdir(base_dir)
+    
+    # 압축 해제
+    kospi_zip = zipfile.ZipFile(zip_file_path)
     kospi_zip.extractall()
     kospi_zip.close()
-
-    if os.path.exists("kospi_code.zip"):
-        os.remove("kospi_code.zip")
-
-def get_kospi_master_dataframe(base_dir):
+    
     # 변경: os.path.join을 사용하여 OS에 맞는 올바른 경로 생성
     file_name = os.path.join(base_dir, "kospi_code.mst")
     tmp_fil1 = os.path.join(base_dir, "kospi_code_part1.tmp")
@@ -92,14 +88,17 @@ def get_kospi_master_dataframe(base_dir):
     os.remove(tmp_fil1)
     os.remove(tmp_fil2)
 
-    print("Done")
-
+    # xlsx 변환
+    xlsx_file = 'kospi_code.xlsx'
+    df.to_excel(xlsx_file, index=False)
+    print(f"Excel saved: {xlsx_file}")
+    
+    # 임시 파일 삭제
+    os.remove(zip_file_path)
+    os.remove(file_name)
+    print("Temporary files deleted")
+    
     return df
 
-kospi_master_download(base_dir, verbose = True)
-df = get_kospi_master_dataframe(base_dir) 
-
-df3 = df
-# 변경: 엑셀 파일 저장 경로도 OS에 맞게 처리
-output_path = os.path.join(base_dir, 'kospi_code.xlsx')
-df3.to_excel(output_path, index=False)
+df = get_kospi_master_dataframe(base_dir)
+print("Done")

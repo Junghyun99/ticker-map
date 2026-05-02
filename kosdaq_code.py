@@ -8,33 +8,29 @@ import os
 
 base_dir = os.getcwd()
 
-def kosdaq_master_download(base_dir, verbose=False):
-
-    cwd = os.getcwd()
-    if (verbose): print(f"current directory is {cwd}")
+def get_kosdaq_master_dataframe(base_dir):
     ssl._create_default_https_context = ssl._create_unverified_context
     
-    urllib.request.urlretrieve("https://new.real.download.dws.co.kr/common/master/kosdaq_code.mst.zip",
-                               os.path.join(base_dir, "kosdaq_code.zip"))
-
-    os.chdir(base_dir)
-    if (verbose): print(f"change directory to {base_dir}")
-    kosdaq_zip = zipfile.ZipFile('kosdaq_code.zip')
-    kosdaq_zip.extractall()
+    zip_file_path = os.path.join(base_dir, "kosdaq_code.mst.zip")
     
+    # 항상 최신 파일 다운로드
+    print("Downloading kosdaq_code.mst.zip...")
+    urllib.request.urlretrieve("https://new.real.download.dws.co.kr/common/master/kosdaq_code.mst.zip", zip_file_path)
+    
+    os.chdir(base_dir)
+    
+    # 압축 해제
+    kosdaq_zip = zipfile.ZipFile(zip_file_path)
+    kosdaq_zip.extractall()
     kosdaq_zip.close()
-
-    if os.path.exists("kosdaq_code.zip"):
-        os.remove("kosdaq_code.zip")
-
-def get_kosdaq_master_dataframe(base_dir):
+    
     file_name = os.path.join(base_dir, "kosdaq_code.mst")
     tmp_fil1 = os.path.join(base_dir, "kosdaq_code_part1.tmp")
     tmp_fil2 = os.path.join(base_dir, "kosdaq_code_part2.tmp")
-
+    
     wf1 = open(tmp_fil1, mode="w", encoding="cp949")
     wf2 = open(tmp_fil2, mode="w", encoding="cp949")
-
+    
     with open(file_name, mode="r", encoding="cp949") as f:
         for row in f:
             rf1 = row[0:len(row) - 222]
@@ -44,13 +40,13 @@ def get_kosdaq_master_dataframe(base_dir):
             wf1.write(rf1_1 + ',' + rf1_2 + ',' + rf1_3 + '\n')
             rf2 = row[-222:]
             wf2.write(rf2)
-
+    
     wf1.close()
     wf2.close()
-
+    
     part1_columns = ['단축코드','표준코드','한글종목명']
     df1 = pd.read_csv(tmp_fil1, header=None, names=part1_columns, encoding='cp949')
-
+    
     field_specs = [2, 1,
                    4, 4, 4, 1, 1,
                    1, 1, 1, 1, 1,
@@ -66,7 +62,7 @@ def get_kosdaq_master_dataframe(base_dir):
                    9, 8, 9, 3, 1,
                    1, 1
                    ]
-
+    
     part2_columns = ['증권그룹구분코드','시가총액 규모 구분 코드 유가',
                      '지수업종 대분류 코드','지수 업종 중분류 코드','지수업종 소분류 코드','벤처기업 여부 (Y/N)',
                      '저유동성종목 여부','KRX 종목 여부','ETP 상품구분코드','KRX100 종목 여부 (Y/N)',
@@ -82,24 +78,28 @@ def get_kosdaq_master_dataframe(base_dir):
                      'KRX300 종목 여부 (Y/N)','매출액','영업이익','경상이익','단기순이익','ROE(자기자본이익률)',
                      '기준년월','전일기준 시가총액 (억)','그룹사 코드','회사신용한도초과여부','담보대출가능여부','대주가능여부'
                      ]
-
+    
     df2 = pd.read_fwf(tmp_fil2, widths=field_specs, names=part2_columns)
-
+    
     df = pd.merge(df1, df2, how='outer', left_index=True, right_index=True)
-
+    
     # clean temporary file and dataframe
     del (df1)
     del (df2)
     os.remove(tmp_fil1)
     os.remove(tmp_fil2)
-
-    print("Done")
-
+    
+    # xlsx 변환
+    xlsx_file = 'kosdaq_code.xlsx'
+    df.to_excel(xlsx_file, index=False)
+    print(f"Excel saved: {xlsx_file}")
+    
+    # 임시 파일 삭제
+    os.remove(zip_file_path)
+    os.remove(file_name)
+    print("Temporary files deleted")
+    
     return df
 
-kosdaq_master_download(base_dir, verbose=True)
 df = get_kosdaq_master_dataframe(base_dir)
-
-output_path = os.path.join(base_dir, 'kosdaq_code.xlsx')
-df.to_excel(output_path, index=False)  # 현재 위치에 엑셀파일로 저장
-df
+print("Done")
