@@ -8,7 +8,7 @@ exchange: KOSPI -> 'KS', KOSDAQ -> 'KQ'
 
 import os
 import sqlite3
-
+from src.config import Config
 import pandas as pd
 
 from src.core.schema import (
@@ -146,6 +146,7 @@ def bulk_insert(conn: sqlite3.Connection, df: pd.DataFrame) -> int:
 
 
 def main() -> None:
+    
     kospi = load_kospi(KOSPI_XLSX)
     kosdaq = load_kosdaq(KOSDAQ_XLSX)
     nas = load_nas(NAS_XLSX)
