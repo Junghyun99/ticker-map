@@ -15,7 +15,7 @@ class _KSTFormatter(logging.Formatter):
         return dt.strftime('%Y-%m-%d %H:%M:%S') + f',{int(record.msecs):03d}'
 
 
-class CoverterLogger(ILogger):
+class ConverterLogger(ILogger):
     def __init__(self, log_dir: str = "logs", run_number: str | None = None):
         os.makedirs(log_dir, exist_ok=True)
         suffix = f"_run{run_number}" if run_number else ""

@@ -9,7 +9,7 @@ exchange: KOSPI -> 'KS', KOSDAQ -> 'KQ'
 import os
 import sqlite3
 from src.config import Config
-from src.infra.logger import CoverterLogger
+from src.infra.logger import ConverterLogger
 from src.infra.notifier import SlackNotifier
 import pandas as pd
 
@@ -150,7 +150,7 @@ def bulk_insert(conn: sqlite3.Connection, df: pd.DataFrame) -> int:
 def main() -> None:
     config = Config()
     run_number = os.getenv("GITHUB_RUN_NUMBER")
-    logger = CoverterLogger(log_dir=config.LOG_PATH, run_number=run_number)
+    logger = ConverterLogger(log_dir=config.LOG_PATH, run_number=run_number)
     slack = SlackNotifier(webhook_url=config.SLACK_WEBHOOK_URL, logger=logger)
 
     kospi = load_kospi(KOSPI_XLSX)
