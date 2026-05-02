@@ -9,6 +9,8 @@ exchange: KOSPI -> 'KS', KOSDAQ -> 'KQ'
 import os
 import sqlite3
 from src.config import Config
+from src.infra.logger import ConverterLogger
+from src.infra.notifier import SlackNotifier
 import pandas as pd
 
 from src.core.schema import (
@@ -146,31 +148,41 @@ def bulk_insert(conn: sqlite3.Connection, df: pd.DataFrame) -> int:
 
 
 def main() -> None:
-    
+    config = Config()
+    run_number = os.getenv("GITHUB_RUN_NUMBER")
+    logger = ConverterLogger(log_dir=config.LOG_PATH, run_number=run_number)
+    slack = SlackNotifier(webhook_url=config.SLACK_WEBHOOK_URL, logger=logger)
+
     kospi = load_kospi(KOSPI_XLSX)
     kosdaq = load_kosdaq(KOSDAQ_XLSX)
     nas = load_nas(NAS_XLSX)
     nys = load_nys(NYS_XLSX)
     ams = load_ams(AMS_XLSX)
-    print(f"[load] kospi: {len(kospi)}, kosdaq: {len(kosdaq)}, nas: {len(nas)}, nys: {len(nys)}, ams: {len(ams)}")
+    logger.info(f"[load] kospi: {len(kospi)}, kosdaq: {len(kosdaq)}, nas: {len(nas)}, nys: {len(nys)}, ams: {len(ams)}")
     df = pd.concat([kospi, kosdaq, nas, nys, ams], ignore_index=True)
 
     conn = init_db(DB_PATH)
     try:
         n = bulk_insert(conn, df)
-        print(f"[insert] inserted: {n}")
+        logger.info(f"[insert] inserted: {n}")
 
         cur = conn.cursor()
-        print("exchange | asset_type | count")
+        logger.info("exchange | asset_type | count")
         for exchange, asset_type, count in cur.execute(
             f"SELECT exchange, asset_type, COUNT(*) FROM {TABLE_NAME} "
             "GROUP BY exchange, asset_type ORDER BY exchange, asset_type;"
         ):
-            print(f"{exchange:<8} | {asset_type:<10} | {count}")
+            logger.info(f"{exchange:<8} | {asset_type:<10} | {count}")
 
-        print("sample:")
+        logger.info("sample:")
         for row in cur.execute(f"SELECT * FROM {TABLE_NAME} LIMIT 5;"):
-            print("  " + " | ".join(str(v) for v in row))
+            logger.info("  " + " | ".join(str(v) for v in row))
+
+        slack.send_message(f"[ticker-map] 완료: {n}건 insert")
+    except Exception as e:
+        logger.error(f"[main] failed: {e}")
+        slack.send_alert(f"[ticker-map] 실패: {e}")
+        raise
     finally:
         conn.close()
 
