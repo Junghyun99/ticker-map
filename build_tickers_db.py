@@ -23,8 +23,12 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "tickers.db")
 KOSPI_XLSX = os.path.join(BASE_DIR, "kospi_code.xlsx")
 KOSDAQ_XLSX = os.path.join(BASE_DIR, "kosdaq_code.xlsx")
+NAS_XLSX = os.path.join(BASE_DIR, "nas_code.xlsx")
+NYS_XLSX = os.path.join(BASE_DIR, "nys_code.xlsx")
+AMS_XLSX = os.path.join(BASE_DIR, "ams_code.xlsx")
 
 ASSET_TYPE_MAP = {"ST": "Stock", "EF": "ETF"}
+OVERSEAS_ASSET_TYPE_MAP = {2: "Stock", 3: "ETF"}
 
 
 def load_kospi(xlsx_path: str) -> pd.DataFrame:
@@ -68,6 +72,63 @@ def load_kosdaq(xlsx_path: str) -> pd.DataFrame:
     return out[list(COLUMNS)]
 
 
+def load_nas(xlsx_path: str) -> pd.DataFrame:
+    raw = pd.read_excel(
+        xlsx_path,
+        usecols=["Symbol", "Exchange code", "Security type(1:Index,2:Stock,3:ETP(ETF),4:Warrant)", "currency"],
+        dtype={"Symbol": str, "Exchange code": str, "Security type(1:Index,2:Stock,3:ETP(ETF),4:Warrant)": int, "currency": str},
+    )
+    df = raw.dropna()
+    df = df[df["Security type(1:Index,2:Stock,3:ETP(ETF),4:Warrant)"].isin(OVERSEAS_ASSET_TYPE_MAP)]
+
+    out = pd.DataFrame({
+        "ticker": df["Symbol"].values,
+        "exchange": df["Exchange code"].values,
+        "alias": df["Symbol"].values,  # alias를 Symbol로 설정
+        "asset_type": df["Security type(1:Index,2:Stock,3:ETP(ETF),4:Warrant)"].map(OVERSEAS_ASSET_TYPE_MAP).values,
+        "currency": df["currency"].values,
+    })
+    return out[list(COLUMNS)]
+
+
+def load_nys(xlsx_path: str) -> pd.DataFrame:
+    raw = pd.read_excel(
+        xlsx_path,
+        usecols=["Symbol", "Exchange code", "Security type(1:Index,2:Stock,3:ETP(ETF),4:Warrant)", "currency"],
+        dtype={"Symbol": str, "Exchange code": str, "Security type(1:Index,2:Stock,3:ETP(ETF),4:Warrant)": int, "currency": str},
+    )
+    df = raw.dropna()
+    df = df[df["Security type(1:Index,2:Stock,3:ETP(ETF),4:Warrant)"].isin(OVERSEAS_ASSET_TYPE_MAP)]
+
+    out = pd.DataFrame({
+        "ticker": df["Symbol"].values,
+        "exchange": df["Exchange code"].values,
+        "alias": df["Symbol"].values,
+        "asset_type": df["Security type(1:Index,2:Stock,3:ETP(ETF),4:Warrant)"].map(OVERSEAS_ASSET_TYPE_MAP).values,
+        "currency": df["currency"].values,
+    })
+    return out[list(COLUMNS)]
+
+
+def load_ams(xlsx_path: str) -> pd.DataFrame:
+    raw = pd.read_excel(
+        xlsx_path,
+        usecols=["Symbol", "Exchange code", "Security type(1:Index,2:Stock,3:ETP(ETF),4:Warrant)", "currency"],
+        dtype={"Symbol": str, "Exchange code": str, "Security type(1:Index,2:Stock,3:ETP(ETF),4:Warrant)": int, "currency": str},
+    )
+    df = raw.dropna()
+    df = df[df["Security type(1:Index,2:Stock,3:ETP(ETF),4:Warrant)"].isin(OVERSEAS_ASSET_TYPE_MAP)]
+
+    out = pd.DataFrame({
+        "ticker": df["Symbol"].values,
+        "exchange": df["Exchange code"].values,
+        "alias": df["Symbol"].values,
+        "asset_type": df["Security type(1:Index,2:Stock,3:ETP(ETF),4:Warrant)"].map(OVERSEAS_ASSET_TYPE_MAP).values,
+        "currency": df["currency"].values,
+    })
+    return out[list(COLUMNS)]
+
+
 def init_db(db_path: str) -> sqlite3.Connection:
     conn = sqlite3.connect(db_path)
     cur = conn.cursor()
@@ -87,8 +148,11 @@ def bulk_insert(conn: sqlite3.Connection, df: pd.DataFrame) -> int:
 def main() -> None:
     kospi = load_kospi(KOSPI_XLSX)
     kosdaq = load_kosdaq(KOSDAQ_XLSX)
-    print(f"[load] kospi: {len(kospi)}, kosdaq: {len(kosdaq)}")
-    df = pd.concat([kospi, kosdaq], ignore_index=True)
+    nas = load_nas(NAS_XLSX)
+    nys = load_nys(NYS_XLSX)
+    ams = load_ams(AMS_XLSX)
+    print(f"[load] kospi: {len(kospi)}, kosdaq: {len(kosdaq)}, nas: {len(nas)}, nys: {len(nys)}, ams: {len(ams)}")
+    df = pd.concat([kospi, kosdaq, nas, nys, ams], ignore_index=True)
 
     conn = init_db(DB_PATH)
     try:
