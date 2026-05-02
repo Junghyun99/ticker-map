@@ -1,6 +1,6 @@
 
 import requests
-from src.interfaces import INotifier
+from src.core.interfaces import INotifier
 
 class SlackNotifier(INotifier):
     def __init__(self, webhook_url: str, logger):

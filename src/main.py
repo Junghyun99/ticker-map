@@ -11,7 +11,7 @@ import sqlite3
 
 import pandas as pd
 
-from src.schema import (
+from src.core.schema import (
     COLUMNS,
     CREATE_TABLE_SQL,
     DROP_TABLE_SQL,

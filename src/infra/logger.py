@@ -3,7 +3,7 @@ import logging
 import os
 from datetime import datetime, timezone, timedelta
 from typing import Any
-from src.interfaces import ILogger
+from src.core.interfaces import ILogger
 
 KST = timezone(timedelta(hours=9))
 
