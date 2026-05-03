@@ -39,10 +39,16 @@ class OverseasMasterDownloader(MasterDownloader):
         return OVERSEAS_RAW_COLUMNS
 
     def _extract_to_dataframe(self, archive: Path, work_dir: Path) -> pd.DataFrame:
-        # .cod 파일은 첫 줄에 영문 헤더가 있어 read_table 이 자동 추출한다.
+        # .cod 파일은 헤더가 없으므로 names 를 직접 지정하고 header=None 으로 읽는다.
         # 헤더 일치 여부는 _validate_columns() 가 expected_raw_columns() 와 비교해 검증.
         cod_path = self._extract_zip(archive, work_dir, suffix=".cod")
-        return pd.read_table(cod_path, sep="\t", encoding="cp949")
+        return pd.read_table(
+            cod_path,
+            sep="\t",
+            encoding="cp949",
+            names=self.expected_raw_columns(),
+            header=None,
+        )
 
     def normalize_to_schema(self, raw: pd.DataFrame) -> list[Ticker]:
         df = raw.dropna(subset=["Symbol", SECTYPE_COL, "Exchange code", "currency"])

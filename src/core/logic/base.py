@@ -84,7 +84,7 @@ class MasterDownloader(ABC):
         with zipfile.ZipFile(archive) as zf:
             zf.extractall(work_dir)
             extracted = [work_dir / name for name in zf.namelist()]
-        match = next((p for p in extracted if p.suffix == suffix), None)
+        match = next((p for p in extracted if p.suffix.lower() == suffix.lower()), None)
         if match is None:
             raise FileNotFoundError(f"No {suffix} file found in {archive.name}")
         return match
