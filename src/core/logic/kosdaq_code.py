@@ -1,105 +1,83 @@
-'''코스닥주식종목코드(kosdaq_code.mst) 정제 파이썬 파일'''
+"""KOSDAQ(KQ) 마스터 다운로더.
+
+KrMasterDownloader 의 템플릿을 따르며, 이 파일에는 KOSDAQ 의 차이점만 담는다:
+URL slug, 고정폭 byte_size, KOSDAQ 만의 part1/part2 컬럼명·field_specs,
+KOSDAQ 고유 alias/그룹 컬럼명(한글종목명/증권그룹구분코드) 매핑.
+"""
+
+from __future__ import annotations
 
 import pandas as pd
-import urllib.request
-import ssl
-import zipfile
-import os
 
-base_dir = os.getcwd()
+from src.core.logic.kr_master import KrMasterDownloader
 
-def get_kosdaq_master_dataframe(base_dir):
-    ssl._create_default_https_context = ssl._create_unverified_context
-    
-    zip_file_path = os.path.join(base_dir, "kosdaq_code.mst.zip")
-    
-    # 항상 최신 파일 다운로드
-    print("Downloading kosdaq_code.mst.zip...")
-    urllib.request.urlretrieve("https://new.real.download.dws.co.kr/common/master/kosdaq_code.mst.zip", zip_file_path)
-    
-    os.chdir(base_dir)
-    
-    # 압축 해제
-    kosdaq_zip = zipfile.ZipFile(zip_file_path)
-    kosdaq_zip.extractall()
-    kosdaq_zip.close()
-    
-    file_name = os.path.join(base_dir, "kosdaq_code.mst")
-    tmp_fil1 = os.path.join(base_dir, "kosdaq_code_part1.tmp")
-    tmp_fil2 = os.path.join(base_dir, "kosdaq_code_part2.tmp")
-    
-    wf1 = open(tmp_fil1, mode="w", encoding="cp949")
-    wf2 = open(tmp_fil2, mode="w", encoding="cp949")
-    
-    with open(file_name, mode="r", encoding="cp949") as f:
-        for row in f:
-            rf1 = row[0:len(row) - 222]
-            rf1_1 = rf1[0:9].rstrip()
-            rf1_2 = rf1[9:21].rstrip()
-            rf1_3 = rf1[21:].strip()
-            wf1.write(rf1_1 + ',' + rf1_2 + ',' + rf1_3 + '\n')
-            rf2 = row[-222:]
-            wf2.write(rf2)
-    
-    wf1.close()
-    wf2.close()
-    
-    part1_columns = ['단축코드','표준코드','한글종목명']
-    df1 = pd.read_csv(tmp_fil1, header=None, names=part1_columns, encoding='cp949')
-    
-    field_specs = [2, 1,
-                   4, 4, 4, 1, 1,
-                   1, 1, 1, 1, 1,
-                   1, 1, 1, 1, 1,
-                   1, 1, 1, 1, 1,
-                   1, 1, 1, 1, 9,
-                   5, 5, 1, 1, 1,
-                   2, 1, 1, 1, 2,
-                   2, 2, 3, 1, 3,
-                   12, 12, 8, 15, 21,
-                   2, 7, 1, 1, 1,
-                   1, 9, 9, 9, 5,
-                   9, 8, 9, 3, 1,
-                   1, 1
-                   ]
-    
-    part2_columns = ['증권그룹구분코드','시가총액 규모 구분 코드 유가',
-                     '지수업종 대분류 코드','지수 업종 중분류 코드','지수업종 소분류 코드','벤처기업 여부 (Y/N)',
-                     '저유동성종목 여부','KRX 종목 여부','ETP 상품구분코드','KRX100 종목 여부 (Y/N)',
-                     'KRX 자동차 여부','KRX 반도체 여부','KRX 바이오 여부','KRX 은행 여부','기업인수목적회사여부',
-                     'KRX 에너지 화학 여부','KRX 철강 여부','단기과열종목구분코드','KRX 미디어 통신 여부',
-                     'KRX 건설 여부','(코스닥)투자주의환기종목여부','KRX 증권 구분','KRX 선박 구분',
-                     'KRX섹터지수 보험여부','KRX섹터지수 운송여부','KOSDAQ150지수여부 (Y,N)','주식 기준가',
-                     '정규 시장 매매 수량 단위','시간외 시장 매매 수량 단위','거래정지 여부','정리매매 여부',
-                     '관리 종목 여부','시장 경고 구분 코드','시장 경고위험 예고 여부','불성실 공시 여부',
-                     '우회 상장 여부','락구분 코드','액면가 변경 구분 코드','증자 구분 코드','증거금 비율',
-                     '신용주문 가능 여부','신용기간','전일 거래량','주식 액면가','주식 상장 일자','상장 주수(천)',
-                     '자본금','결산 월','공모 가격','우선주 구분 코드','공매도과열종목여부','이상급등종목여부',
-                     'KRX300 종목 여부 (Y/N)','매출액','영업이익','경상이익','단기순이익','ROE(자기자본이익률)',
-                     '기준년월','전일기준 시가총액 (억)','그룹사 코드','회사신용한도초과여부','담보대출가능여부','대주가능여부'
-                     ]
-    
-    df2 = pd.read_fwf(tmp_fil2, widths=field_specs, names=part2_columns)
-    
-    df = pd.merge(df1, df2, how='outer', left_index=True, right_index=True)
-    
-    # clean temporary file and dataframe
-    del (df1)
-    del (df2)
-    os.remove(tmp_fil1)
-    os.remove(tmp_fil2)
-    
-    # xlsx 변환
-    xlsx_file = 'kosdaq_code.xlsx'
-    df.to_excel(xlsx_file, index=False)
-    print(f"Excel saved: {xlsx_file}")
-    
-    # 임시 파일 삭제
-    os.remove(zip_file_path)
-    os.remove(file_name)
-    print("Temporary files deleted")
-    
-    return df
+KOSDAQ_BYTE_SIZE = 222
 
-df = get_kosdaq_master_dataframe(base_dir)
-print("Done")
+KOSDAQ_PART1_COLUMNS = ["단축코드", "표준코드", "한글종목명"]
+
+KOSDAQ_FIELD_SPECS = [
+    2, 1,
+    4, 4, 4, 1, 1,
+    1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1,
+    1, 1, 1, 1, 9,
+    5, 5, 1, 1, 1,
+    2, 1, 1, 1, 2,
+    2, 2, 3, 1, 3,
+    12, 12, 8, 15, 21,
+    2, 7, 1, 1, 1,
+    1, 9, 9, 9, 5,
+    9, 8, 9, 3, 1,
+    1, 1,
+]
+
+KOSDAQ_PART2_COLUMNS = [
+    "증권그룹구분코드", "시가총액 규모 구분 코드 유가",
+    "지수업종 대분류 코드", "지수 업종 중분류 코드", "지수업종 소분류 코드", "벤처기업 여부 (Y/N)",
+    "저유동성종목 여부", "KRX 종목 여부", "ETP 상품구분코드", "KRX100 종목 여부 (Y/N)",
+    "KRX 자동차 여부", "KRX 반도체 여부", "KRX 바이오 여부", "KRX 은행 여부", "기업인수목적회사여부",
+    "KRX 에너지 화학 여부", "KRX 철강 여부", "단기과열종목구분코드", "KRX 미디어 통신 여부",
+    "KRX 건설 여부", "(코스닥)투자주의환기종목여부", "KRX 증권 구분", "KRX 선박 구분",
+    "KRX섹터지수 보험여부", "KRX섹터지수 운송여부", "KOSDAQ150지수여부 (Y,N)", "주식 기준가",
+    "정규 시장 매매 수량 단위", "시간외 시장 매매 수량 단위", "거래정지 여부", "정리매매 여부",
+    "관리 종목 여부", "시장 경고 구분 코드", "시장 경고위험 예고 여부", "불성실 공시 여부",
+    "우회 상장 여부", "락구분 코드", "액면가 변경 구분 코드", "증자 구분 코드", "증거금 비율",
+    "신용주문 가능 여부", "신용기간", "전일 거래량", "주식 액면가", "주식 상장 일자", "상장 주수(천)",
+    "자본금", "결산 월", "공모 가격", "우선주 구분 코드", "공매도과열종목여부", "이상급등종목여부",
+    "KRX300 종목 여부 (Y/N)", "매출액", "영업이익", "경상이익", "단기순이익", "ROE(자기자본이익률)",
+    "기준년월", "전일기준 시가총액 (억)", "그룹사 코드", "회사신용한도초과여부", "담보대출가능여부", "대주가능여부",
+]
+
+KOSDAQ_ASSET_TYPE_MAP = {"ST": "Stock", "EF": "ETF"}
+
+
+class KosdaqDownloader(KrMasterDownloader):
+    @property
+    def slug(self) -> str: return "kosdaq"
+
+    @property
+    def byte_size(self) -> int: return KOSDAQ_BYTE_SIZE
+
+    @property
+    def part1_columns(self) -> list[str]: return KOSDAQ_PART1_COLUMNS
+
+    @property
+    def field_specs(self) -> list[int]: return KOSDAQ_FIELD_SPECS
+
+    @property
+    def part2_columns(self) -> list[str]: return KOSDAQ_PART2_COLUMNS
+
+    def normalize_to_schema(self, raw: pd.DataFrame) -> pd.DataFrame:
+        df = raw.dropna(subset=["단축코드", "증권그룹구분코드"])
+        df = df[df["증권그룹구분코드"].isin(KOSDAQ_ASSET_TYPE_MAP)]
+        df = df[df["단축코드"].str.len() == 6]
+        return pd.DataFrame(
+            {
+                "ticker": df["단축코드"].values,
+                "exchange": "KQ",
+                "alias": df["한글종목명"].values,
+                "asset_type": df["증권그룹구분코드"].map(KOSDAQ_ASSET_TYPE_MAP).values,
+                "currency": "KRW",
+            }
+        )
