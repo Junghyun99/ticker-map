@@ -1,4 +1,6 @@
 from abc import ABC, abstractmethod
+from pathlib import Path
+
 
 class ILogger(ABC):
     @abstractmethod
@@ -16,3 +18,14 @@ class INotifier(ABC):
     def send_message(self, message: str) -> None: ...
     @abstractmethod
     def send_alert(self, message: str) -> None: ...
+
+
+class ITickerRepository(ABC):
+    @abstractmethod
+    def reset_schema(self) -> None: ...
+    @abstractmethod
+    def bulk_insert_from_xlsx_dir(self, data_dir: Path, filenames: list[str]) -> int: ...
+    @abstractmethod
+    def group_summary(self) -> list[tuple]: ...
+    @abstractmethod
+    def sample(self, limit: int = 5) -> list[tuple]: ...

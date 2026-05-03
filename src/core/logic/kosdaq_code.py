@@ -1,11 +1,15 @@
-"""KOSDAQ 마스터(.mst) 다운로드 진입점.
+"""KOSDAQ(KQ) 마스터 다운로더.
 
-실제 다운로드/파싱 로직은 master_downloader.download_kr_master 에 통합되어 있고,
-이 파일은 KOSDAQ 고유의 byte_size/field_specs/columns 만 선언한 얇은 진입점이다.
+KrMasterDownloader 의 템플릿을 따르며, 이 파일에는 KOSDAQ 의 차이점만 담는다:
+URL slug, 고정폭 byte_size, KOSDAQ 만의 part1/part2 컬럼명·field_specs,
+KOSDAQ 고유 alias/그룹 컬럼명(한글종목명/증권그룹구분코드) 매핑.
 """
 
-from src.config import Config
-from src.core.logic.master_downloader import download_kr_master
+from __future__ import annotations
+
+import pandas as pd
+
+from src.core.logic.kr_master import KrMasterDownloader
 
 KOSDAQ_BYTE_SIZE = 222
 
@@ -45,18 +49,35 @@ KOSDAQ_PART2_COLUMNS = [
     "기준년월", "전일기준 시가총액 (억)", "그룹사 코드", "회사신용한도초과여부", "담보대출가능여부", "대주가능여부",
 ]
 
-
-def main() -> None:
-    config = Config()
-    download_kr_master(
-        slug="kosdaq",
-        byte_size=KOSDAQ_BYTE_SIZE,
-        part1_columns=KOSDAQ_PART1_COLUMNS,
-        field_specs=KOSDAQ_FIELD_SPECS,
-        part2_columns=KOSDAQ_PART2_COLUMNS,
-        data_dir=config.DATA_PATH,
-    )
+KOSDAQ_ASSET_TYPE_MAP = {"ST": "Stock", "EF": "ETF"}
 
 
-if __name__ == "__main__":
-    main()
+class KosdaqDownloader(KrMasterDownloader):
+    @property
+    def slug(self) -> str: return "kosdaq"
+
+    @property
+    def byte_size(self) -> int: return KOSDAQ_BYTE_SIZE
+
+    @property
+    def part1_columns(self) -> list[str]: return KOSDAQ_PART1_COLUMNS
+
+    @property
+    def field_specs(self) -> list[int]: return KOSDAQ_FIELD_SPECS
+
+    @property
+    def part2_columns(self) -> list[str]: return KOSDAQ_PART2_COLUMNS
+
+    def normalize_to_schema(self, raw: pd.DataFrame) -> pd.DataFrame:
+        df = raw.dropna(subset=["단축코드", "증권그룹구분코드"])
+        df = df[df["증권그룹구분코드"].isin(KOSDAQ_ASSET_TYPE_MAP)]
+        df = df[df["단축코드"].str.len() == 6]
+        return pd.DataFrame(
+            {
+                "ticker": df["단축코드"].values,
+                "exchange": "KQ",
+                "alias": df["한글종목명"].values,
+                "asset_type": df["증권그룹구분코드"].map(KOSDAQ_ASSET_TYPE_MAP).values,
+                "currency": "KRW",
+            }
+        )
