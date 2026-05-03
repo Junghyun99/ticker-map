@@ -10,6 +10,7 @@ from __future__ import annotations
 import pandas as pd
 
 from src.core.logic.kr_master import KrMasterDownloader
+from src.core.schema import Ticker
 
 KOSDAQ_BYTE_SIZE = 222
 
@@ -68,16 +69,21 @@ class KosdaqDownloader(KrMasterDownloader):
     @property
     def part2_columns(self) -> list[str]: return KOSDAQ_PART2_COLUMNS
 
-    def normalize_to_schema(self, raw: pd.DataFrame) -> pd.DataFrame:
+    def normalize_to_schema(self, raw: pd.DataFrame) -> list[Ticker]:
         df = raw.dropna(subset=["단축코드", "증권그룹구분코드"])
         df = df[df["증권그룹구분코드"].isin(KOSDAQ_ASSET_TYPE_MAP)]
         df = df[df["단축코드"].str.len() == 6]
-        return pd.DataFrame(
-            {
-                "ticker": df["단축코드"].values,
-                "exchange": "KQ",
-                "alias": df["한글종목명"].values,
-                "asset_type": df["증권그룹구분코드"].map(KOSDAQ_ASSET_TYPE_MAP).values,
-                "currency": "KRW",
-            }
-        )
+        return [
+            Ticker(
+                ticker=ticker,
+                exchange="KQ",
+                alias=(alias if pd.notna(alias) else None),
+                asset_type=KOSDAQ_ASSET_TYPE_MAP[group],
+                currency="KRW",
+            )
+            for ticker, alias, group in zip(
+                df["단축코드"].values,
+                df["한글종목명"].values,
+                df["증권그룹구분코드"].values,
+            )
+        ]

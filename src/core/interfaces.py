@@ -1,5 +1,8 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
+from typing import Iterable
+
+from src.core.schema import Ticker
 
 
 class ILogger(ABC):
@@ -24,8 +27,13 @@ class ITickerRepository(ABC):
     @abstractmethod
     def reset_schema(self) -> None: ...
     @abstractmethod
-    def bulk_insert_from_xlsx_dir(self, data_dir: Path, filenames: list[str]) -> int: ...
+    def insert_many(self, tickers: Iterable[Ticker]) -> int: ...
     @abstractmethod
     def group_summary(self) -> list[tuple]: ...
     @abstractmethod
     def sample(self, limit: int = 5) -> list[tuple]: ...
+
+
+class IArtifactWriter(ABC):
+    @abstractmethod
+    def write(self, slug: str, tickers: Iterable[Ticker]) -> Path: ...

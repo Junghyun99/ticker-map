@@ -9,6 +9,7 @@ from __future__ import annotations
 import pandas as pd
 
 from src.core.logic.kr_master import KrMasterDownloader
+from src.core.schema import Ticker
 
 KOSPI_BYTE_SIZE = 228
 
@@ -67,16 +68,21 @@ class KospiDownloader(KrMasterDownloader):
     @property
     def part2_columns(self) -> list[str]: return KOSPI_PART2_COLUMNS
 
-    def normalize_to_schema(self, raw: pd.DataFrame) -> pd.DataFrame:
+    def normalize_to_schema(self, raw: pd.DataFrame) -> list[Ticker]:
         df = raw.dropna(subset=["단축코드", "그룹코드"])
         df = df[df["그룹코드"].isin(KOSPI_ASSET_TYPE_MAP)]
         df = df[df["단축코드"].str.len() == 6]
-        return pd.DataFrame(
-            {
-                "ticker": df["단축코드"].values,
-                "exchange": "KS",
-                "alias": df["한글명"].values,
-                "asset_type": df["그룹코드"].map(KOSPI_ASSET_TYPE_MAP).values,
-                "currency": "KRW",
-            }
-        )
+        return [
+            Ticker(
+                ticker=ticker,
+                exchange="KS",
+                alias=(alias if pd.notna(alias) else None),
+                asset_type=KOSPI_ASSET_TYPE_MAP[group],
+                currency="KRW",
+            )
+            for ticker, alias, group in zip(
+                df["단축코드"].values,
+                df["한글명"].values,
+                df["그룹코드"].values,
+            )
+        ]

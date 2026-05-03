@@ -1,11 +1,10 @@
 """각 Downloader 의 normalize_to_schema 동작을 raw fixture 로 검증한다.
 
-리팩토링의 가장 위험도 높은 표면은 거래소별 raw → DB 스키마 매핑이므로,
+리팩토링의 가장 위험도 높은 표면은 거래소별 raw → Ticker 도메인 객체 매핑이므로,
 fixture 로 거래소별 입력/기대출력을 고정해 회귀를 잡는다. 다운로드/압축해제는
 template 메서드의 다른 단계라 별도 테스트.
 """
 
-from pathlib import Path
 from unittest.mock import MagicMock
 
 import pandas as pd
@@ -17,7 +16,6 @@ from src.core.logic.kospi_code import KospiDownloader
 from src.core.logic.nas_code import NasDownloader
 from src.core.logic.nys_code import NysDownloader
 from src.core.logic.overseas_master import SECTYPE_COL
-from src.core.schema import COLUMNS
 
 
 @pytest.fixture
@@ -26,7 +24,7 @@ def fake_logger() -> MagicMock:
 
 
 def _make(downloader_cls, fake_logger):
-    return downloader_cls(Path("/tmp"), fake_logger)
+    return downloader_cls(fake_logger)
 
 
 def test_kospi_normalize(fake_logger):
@@ -39,12 +37,12 @@ def test_kospi_normalize(fake_logger):
     )
     out = _make(KospiDownloader, fake_logger).normalize_to_schema(raw)
 
-    assert list(out.columns) == list(COLUMNS)
     # 6자리 + ST/EF 만 통과 (TOOLONG 제외). alias 는 Optional 이라 None 도 유지.
-    assert out["ticker"].tolist() == ["000020", "000040", "999999", "111111"]
-    assert (out["exchange"] == "KS").all()
-    assert (out["currency"] == "KRW").all()
-    assert out["asset_type"].tolist() == ["Stock", "Stock", "ETF", "Stock"]
+    assert [t.ticker for t in out] == ["000020", "000040", "999999", "111111"]
+    assert all(t.exchange == "KS" for t in out)
+    assert all(t.currency == "KRW" for t in out)
+    assert [t.asset_type for t in out] == ["Stock", "Stock", "ETF", "Stock"]
+    assert [t.alias for t in out] == ["동화약품", "KR모터스", "지수상품", None]
 
 
 def test_kosdaq_normalize_uses_kosdaq_specific_columns(fake_logger):
@@ -57,11 +55,11 @@ def test_kosdaq_normalize_uses_kosdaq_specific_columns(fake_logger):
     )
     out = _make(KosdaqDownloader, fake_logger).normalize_to_schema(raw)
 
-    assert list(out.columns) == list(COLUMNS)
-    assert (out["exchange"] == "KQ").all()
-    assert (out["currency"] == "KRW").all()
-    assert out["ticker"].tolist() == ["000020", "000040", "999999"]
-    assert out["asset_type"].tolist() == ["Stock", "Stock", "ETF"]
+    assert all(t.exchange == "KQ" for t in out)
+    assert all(t.currency == "KRW" for t in out)
+    assert [t.ticker for t in out] == ["000020", "000040", "999999"]
+    assert [t.asset_type for t in out] == ["Stock", "Stock", "ETF"]
+    assert [t.alias for t in out] == ["A기업", None, "C기업"]
 
 
 def test_kr_filters_non_st_ef_group_codes(fake_logger):
@@ -73,8 +71,8 @@ def test_kr_filters_non_st_ef_group_codes(fake_logger):
         }
     )
     out = _make(KospiDownloader, fake_logger).normalize_to_schema(raw)
-    assert out["ticker"].tolist() == ["000020", "000050"]
-    assert out["asset_type"].tolist() == ["Stock", "ETF"]
+    assert [t.ticker for t in out] == ["000020", "000050"]
+    assert [t.asset_type for t in out] == ["Stock", "ETF"]
 
 
 @pytest.mark.parametrize("downloader_cls", [NasDownloader, NysDownloader, AmsDownloader])
@@ -89,13 +87,12 @@ def test_overseas_uses_dynamic_exchange_and_currency(downloader_cls, fake_logger
     )
     out = _make(downloader_cls, fake_logger).normalize_to_schema(raw)
 
-    assert list(out.columns) == list(COLUMNS)
-    assert out["ticker"].tolist() == ["AAPL", "QQQ", "MSFT"]
-    assert out["alias"].tolist() == ["AAPL", "QQQ", "MSFT"]
+    assert [t.ticker for t in out] == ["AAPL", "QQQ", "MSFT"]
+    assert [t.alias for t in out] == ["AAPL", "QQQ", "MSFT"]
     # exchange/currency 는 데이터 컬럼에서 가져옴
-    assert (out["exchange"] == "NAS").all()
-    assert (out["currency"] == "USD").all()
-    assert out["asset_type"].tolist() == ["Stock", "ETF", "Stock"]
+    assert all(t.exchange == "NAS" for t in out)
+    assert all(t.currency == "USD" for t in out)
+    assert [t.asset_type for t in out] == ["Stock", "ETF", "Stock"]
 
 
 def test_overseas_drops_rows_with_null_required_fields(fake_logger):
@@ -108,7 +105,7 @@ def test_overseas_drops_rows_with_null_required_fields(fake_logger):
         }
     )
     out = _make(NasDownloader, fake_logger).normalize_to_schema(raw)
-    assert out["ticker"].tolist() == ["AAPL"]
+    assert [t.ticker for t in out] == ["AAPL"]
 
 
 def test_validate_columns_raises_on_missing_expected_columns(fake_logger):

@@ -12,9 +12,11 @@ from src.core.logic.kosdaq_code import KosdaqDownloader
 from src.core.logic.kospi_code import KospiDownloader
 from src.core.logic.nas_code import NasDownloader
 from src.core.logic.nys_code import NysDownloader
+from src.core.schema import Ticker
 from src.infra.logger import ConverterLogger
 from src.infra.notifier import SlackNotifier
 from src.infra.sqlite_repository import SqliteTickerRepository
+from src.infra.xlsx_writer import XlsxArtifactWriter
 
 
 class App:
@@ -24,23 +26,26 @@ class App:
         self.logger = ConverterLogger(log_dir=self.config.LOG_PATH, run_number=run_number)
         self.notifier = SlackNotifier(webhook_url=self.config.SLACK_WEBHOOK_URL, logger=self.logger)
         self.repo = SqliteTickerRepository(self.config.DB_PATH)
+        self.xlsx_writer = XlsxArtifactWriter(self.config.DATA_PATH, self.logger)
         self.downloaders: list[MasterDownloader] = [
-            KospiDownloader(self.config.DATA_PATH, self.logger),
-            KosdaqDownloader(self.config.DATA_PATH, self.logger),
-            NasDownloader(self.config.DATA_PATH, self.logger),
-            NysDownloader(self.config.DATA_PATH, self.logger),
-            AmsDownloader(self.config.DATA_PATH, self.logger),
+            KospiDownloader(self.logger),
+            KosdaqDownloader(self.logger),
+            NasDownloader(self.logger),
+            NysDownloader(self.logger),
+            AmsDownloader(self.logger),
         ]
         # 항상 새 데이터로 만든다.
         self.repo.reset_schema()
 
     def run(self) -> None:
         try:
-            xlsx_paths = [d.run() for d in self.downloaders]
-            n = self.repo.bulk_insert_from_xlsx_dir(
-                self.config.DATA_PATH,
-                [p.name for p in xlsx_paths],
-            )
+            all_tickers: list[Ticker] = []
+            for d in self.downloaders:
+                tickers = d.run()
+                self.xlsx_writer.write(d.slug, tickers)
+                all_tickers.extend(tickers)
+
+            n = self.repo.insert_many(all_tickers)
             self.logger.info(f"[insert] inserted: {n}")
 
             self.logger.info("exchange | asset_type | count")

@@ -1,24 +1,24 @@
 """tickers.db SQLite CRUD 캡슐화.
 
-엑셀이 이미 DB 스키마(ticker, exchange, alias, asset_type, currency)와 동일한
-형태로 정규화되어 있다고 전제한다. 거래소별 변환 로직은 다운로더에 있으므로
+다운로더가 정규화한 :class:`Ticker` 객체를 그대로 받아 적재한다.
+거래소별 변환 로직은 다운로더에 있고, xlsx 산출물은 별도 어댑터가 담당하므로
 이 모듈은 단순 적재만 책임진다.
 """
 
 from __future__ import annotations
 
 import sqlite3
+from dataclasses import astuple
 from pathlib import Path
-
-import pandas as pd
+from typing import Iterable
 
 from src.core.interfaces import ITickerRepository
 from src.core.schema import (
-    COLUMNS,
     CREATE_TABLE_SQL,
     DROP_TABLE_SQL,
     INSERT_SQL,
     TABLE_NAME,
+    Ticker,
 )
 
 
@@ -36,15 +36,13 @@ class SqliteTickerRepository(ITickerRepository):
             cur.execute(CREATE_TABLE_SQL)
             conn.commit()
 
-    def bulk_insert_from_xlsx_dir(self, data_dir: Path, filenames: list[str]) -> int:
-        frames = [pd.read_excel(data_dir / name) for name in filenames]
-        df = pd.concat(frames, ignore_index=True)
-        df = df[list(COLUMNS)]
+    def insert_many(self, tickers: Iterable[Ticker]) -> int:
+        rows = [astuple(t) for t in tickers]
         with self._connect() as conn:
             cur = conn.cursor()
-            cur.executemany(INSERT_SQL, df.itertuples(index=False, name=None))
+            cur.executemany(INSERT_SQL, rows)
             conn.commit()
-        return len(df)
+        return len(rows)
 
     def group_summary(self) -> list[tuple]:
         with self._connect() as conn:
