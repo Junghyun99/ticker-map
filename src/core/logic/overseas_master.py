@@ -38,15 +38,10 @@ class OverseasMasterDownloader(MasterDownloader):
         return OVERSEAS_RAW_COLUMNS
 
     def _extract_to_dataframe(self, archive: Path, work_dir: Path) -> pd.DataFrame:
+        # .cod 파일은 첫 줄에 영문 헤더가 있어 read_table 이 자동 추출한다.
+        # 헤더 일치 여부는 _validate_columns() 가 expected_raw_columns() 와 비교해 검증.
         cod_path = self._extract_zip(archive, work_dir, suffix=".cod")
-        df = pd.read_table(cod_path, sep="\t", encoding="cp949")
-        if len(df.columns) != len(OVERSEAS_RAW_COLUMNS):
-            raise ValueError(
-                f"[{self.slug}] column count mismatch: "
-                f"expected {len(OVERSEAS_RAW_COLUMNS)}, got {len(df.columns)}"
-            )
-        df.columns = OVERSEAS_RAW_COLUMNS
-        return df
+        return pd.read_table(cod_path, sep="\t", encoding="cp949")
 
     def normalize_to_schema(self, raw: pd.DataFrame) -> pd.DataFrame:
         df = raw.dropna(subset=["Symbol", SECTYPE_COL, "Exchange code", "currency"])
