@@ -39,13 +39,12 @@ class App:
 
     def run(self) -> None:
         try:
-            all_tickers: list[Ticker] = []
+            n = 0
             for d in self.downloaders:
                 tickers = d.run()
                 self.xlsx_writer.write(d.slug, tickers)
-                all_tickers.extend(tickers)
+                n += self.repo.insert_many(tickers)
 
-            n = self.repo.insert_many(all_tickers)
             self.logger.info(f"[insert] inserted: {n}")
 
             self.logger.info("exchange | asset_type | count")
