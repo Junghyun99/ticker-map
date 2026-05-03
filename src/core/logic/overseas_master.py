@@ -11,6 +11,7 @@ from pathlib import Path
 import pandas as pd
 
 from src.core.logic.base import DWS_BASE_URL, MasterDownloader
+from src.core.schema import Ticker
 
 OVERSEAS_RAW_COLUMNS: list[str] = [
     "National code", "Exchange id", "Exchange code", "Exchange name",
@@ -43,15 +44,21 @@ class OverseasMasterDownloader(MasterDownloader):
         cod_path = self._extract_zip(archive, work_dir, suffix=".cod")
         return pd.read_table(cod_path, sep="\t", encoding="cp949")
 
-    def normalize_to_schema(self, raw: pd.DataFrame) -> pd.DataFrame:
+    def normalize_to_schema(self, raw: pd.DataFrame) -> list[Ticker]:
         df = raw.dropna(subset=["Symbol", SECTYPE_COL, "Exchange code", "currency"])
         df = df[df[SECTYPE_COL].isin(OVERSEAS_ASSET_TYPE_MAP)]
-        return pd.DataFrame(
-            {
-                "ticker": df["Symbol"].values,
-                "exchange": df["Exchange code"].values,
-                "alias": df["Symbol"].values,
-                "asset_type": df[SECTYPE_COL].map(OVERSEAS_ASSET_TYPE_MAP).values,
-                "currency": df["currency"].values,
-            }
-        )
+        return [
+            Ticker(
+                ticker=symbol,
+                exchange=exchange,
+                alias=symbol,
+                asset_type=OVERSEAS_ASSET_TYPE_MAP[sectype],
+                currency=currency,
+            )
+            for symbol, exchange, sectype, currency in zip(
+                df["Symbol"].values,
+                df["Exchange code"].values,
+                df[SECTYPE_COL].values,
+                df["currency"].values,
+            )
+        ]

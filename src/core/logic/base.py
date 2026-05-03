@@ -1,15 +1,17 @@
 """마스터 파일 다운로더의 추상 베이스 (템플릿 메서드 패턴).
 
-run() 의 4단계 흐름은 모든 거래소가 공유한다:
+run() 의 흐름은 모든 거래소가 공유한다:
     1. URL 에서 zip 다운로드
     2. 압축해제 후 raw DataFrame 생성
        - 사전정의 컬럼명 검증 (방어 동작)
-    3. raw DataFrame 을 DB 스키마(5컬럼)로 정규화 → xlsx 저장
+    3. raw DataFrame 을 Ticker 도메인 객체 리스트로 정규화
     4. (tempfile 자동 정리)
 
 거래소별로 달라지는 부분만 자식이 정의:
     - url(), slug, expected_raw_columns(), normalize_to_schema(raw)
     - _extract_to_dataframe(archive, work_dir): KR=고정폭, 해외=탭구분
+
+산출물 저장과 DB 적재는 별도 어댑터 책임이다 (이 모듈에서 분리됨).
 """
 
 from __future__ import annotations
@@ -23,7 +25,7 @@ import pandas as pd
 import requests
 
 from src.core.interfaces import ILogger
-from src.core.schema import COLUMNS
+from src.core.schema import Ticker
 
 DWS_BASE_URL = "https://new.real.download.dws.co.kr/common/master"
 
@@ -31,10 +33,7 @@ DWS_BASE_URL = "https://new.real.download.dws.co.kr/common/master"
 class MasterDownloader(ABC):
     """run() 이 템플릿. 자식은 추상 메서드만 채운다."""
 
-    SCHEMA_COLUMNS: tuple[str, ...] = COLUMNS
-
-    def __init__(self, data_dir: Path, logger: ILogger) -> None:
-        self.data_dir = data_dir
+    def __init__(self, logger: ILogger) -> None:
         self.logger = logger
 
     # 자식이 정의 (거래소 정체성)
@@ -49,22 +48,22 @@ class MasterDownloader(ABC):
     def expected_raw_columns(self) -> list[str]: ...
 
     @abstractmethod
-    def normalize_to_schema(self, raw: pd.DataFrame) -> pd.DataFrame: ...
+    def normalize_to_schema(self, raw: pd.DataFrame) -> list[Ticker]: ...
 
     # 중간 추상(KR vs 해외)이 정의
     @abstractmethod
     def _extract_to_dataframe(self, archive: Path, work_dir: Path) -> pd.DataFrame: ...
 
     # 템플릿 메서드 — 자식이 override 하지 않음
-    def run(self) -> Path:
-        self.data_dir.mkdir(parents=True, exist_ok=True)
+    def run(self) -> list[Ticker]:
         with tempfile.TemporaryDirectory() as tmp:
             work_dir = Path(tmp)
             archive = self._download(self.url(), work_dir)
             raw = self._extract_to_dataframe(archive, work_dir)
             self._validate_columns(raw)
-            normalized = self.normalize_to_schema(raw)
-        return self._save_xlsx(normalized)
+            tickers = self.normalize_to_schema(raw)
+        self.logger.info(f"[normalize] {self.slug} ({len(tickers)} rows)")
+        return tickers
 
     # 공통 구현
     def _download(self, url: str, work_dir: Path) -> Path:
@@ -98,11 +97,3 @@ class MasterDownloader(ABC):
             raise ValueError(
                 f"[{self.slug}] raw 마스터 컬럼 불일치: missing={sorted(missing)}"
             )
-
-    def _save_xlsx(self, df: pd.DataFrame) -> Path:
-        # SCHEMA_COLUMNS 순서를 강제해 적재 단계와 일치시킨다.
-        df = df[list(self.SCHEMA_COLUMNS)]
-        xlsx_path = self.data_dir / f"{self.slug}_code.xlsx"
-        df.to_excel(xlsx_path, index=False)
-        self.logger.info(f"[excel] {xlsx_path} ({len(df)} rows)")
-        return xlsx_path
