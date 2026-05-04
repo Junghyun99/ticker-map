@@ -1,5 +1,5 @@
 from unittest.mock import MagicMock, patch
-from src.infra.notifier import SlackNotifier
+from src.infra.slack_notifier import SlackNotifier
 
 def test_slack_notifier_no_url():
     logger = MagicMock()

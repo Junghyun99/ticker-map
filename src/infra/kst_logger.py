@@ -2,9 +2,11 @@ import logging
 import os
 from datetime import datetime, timezone, timedelta
 from typing import Any
-from src.core.interfaces import ILogger
+
+from src.core.ports.logger import ILogger
 
 KST = timezone(timedelta(hours=9))
+
 
 class _KSTFormatter(logging.Formatter):
     def formatTime(self, record, datefmt=None):
@@ -14,7 +16,7 @@ class _KSTFormatter(logging.Formatter):
         return dt.strftime('%Y-%m-%d %H:%M:%S') + f',{int(record.msecs):03d}'
 
 
-class ConverterLogger(ILogger):
+class KstLogger(ILogger):
     def __init__(self, log_dir: str = "logs", run_number: str | None = None):
         os.makedirs(log_dir, exist_ok=True)
         suffix = f"_run{run_number}" if run_number else ""

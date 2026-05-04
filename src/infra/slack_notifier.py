@@ -1,9 +1,11 @@
-
 import requests
-from src.core.interfaces import INotifier
+
+from src.core.ports.logger import ILogger
+from src.core.ports.notifier import INotifier
+
 
 class SlackNotifier(INotifier):
-    def __init__(self, webhook_url: str, logger):
+    def __init__(self, webhook_url: str, logger: ILogger):
         self.webhook_url = webhook_url
         self.logger = logger
 
@@ -20,26 +22,21 @@ class SlackNotifier(INotifier):
             # URL이 없으면(테스트 환경 등) 콘솔에만 출력
             msg = f"[Slack Mock] {text}"
             self.logger.info(msg)
-            
             return
 
         try:
-            # 슬랙 Webhook은 JSON Payload를 사용
             payload = {"text": text}
             response = requests.post(
-                self.webhook_url, 
+                self.webhook_url,
                 json=payload,
                 headers={'Content-Type': 'application/json'},
                 timeout=5
             )
-            
+
             if response.status_code != 200:
                 error_msg = f"[Slack Error] Status: {response.status_code}, Body: {response.text}"
-                # [핵심] 파일에 기록 남기기
                 self.logger.error(error_msg)
 
         except Exception as e:
             error_msg = f"[Slack Error] Connection failed: {e}"
-            # [핵심] 파일에 기록 남기기
             self.logger.error(error_msg)
-            
