@@ -8,12 +8,12 @@ def test_config_default(monkeypatch):
     
     config = Config()
     assert config.SLACK_WEBHOOK_URL == "http://test.url"
-    assert config.LOG_PATH == "logs/local"
+    assert config.LOG_PATH == Path("logs/local")
     assert config.DATA_PATH == Path("data")
     assert config.DB_PATH == Path("tickers.db")
 
 def test_config_github_actions(monkeypatch):
     monkeypatch.setenv("GITHUB_ACTIONS", "true")
-    
+
     config = Config()
-    assert config.LOG_PATH == "logs/ci"
+    assert config.LOG_PATH == Path("logs/ci")

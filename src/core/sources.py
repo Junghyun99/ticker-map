@@ -3,17 +3,22 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Literal
 
 DWS_BASE_URL = "https://new.real.download.dws.co.kr/common/master"
+
+ArchiveSuffix = Literal[".mst", ".cod"]
+ParserKind = Literal["kr_mst", "overseas_cod"]
+NormalizerKind = Literal["kospi", "kosdaq", "overseas"]
 
 
 @dataclass(frozen=True)
 class SourceSpec:
     slug: str
     url: str
-    archive_suffix: str    # ".mst" | ".cod"
-    parser_kind: str       # "kr_mst" | "overseas_cod"
-    normalizer_kind: str   # "kospi" | "kosdaq" | "overseas"
+    archive_suffix: ArchiveSuffix
+    parser_kind: ParserKind
+    normalizer_kind: NormalizerKind
 
 
 KOSPI = SourceSpec(

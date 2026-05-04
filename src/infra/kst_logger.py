@@ -1,6 +1,7 @@
 import logging
 import os
 from datetime import datetime, timezone, timedelta
+from pathlib import Path
 from typing import Any
 
 from src.core.ports.logger import ILogger
@@ -17,7 +18,7 @@ class _KSTFormatter(logging.Formatter):
 
 
 class KstLogger(ILogger):
-    def __init__(self, log_dir: str = "logs", run_number: str | None = None):
+    def __init__(self, log_dir: str | Path = "logs", run_number: str | None = None):
         os.makedirs(log_dir, exist_ok=True)
         suffix = f"_run{run_number}" if run_number else ""
         self.log_file = os.path.join(log_dir, f"{datetime.now(KST).strftime('%Y-%m-%d')}{suffix}.log")
