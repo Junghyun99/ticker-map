@@ -1,6 +1,6 @@
 import logging
-import os
 from datetime import datetime, timezone, timedelta
+from pathlib import Path
 from typing import Any
 
 from src.core.ports.logger import ILogger
@@ -17,13 +17,15 @@ class _KSTFormatter(logging.Formatter):
 
 
 class KstLogger(ILogger):
-    def __init__(self, log_dir: str = "logs", run_number: str | None = None):
-        os.makedirs(log_dir, exist_ok=True)
+    def __init__(self, log_dir: str | Path = "logs", run_number: str | None = None):
+        log_dir = Path(log_dir)
+        log_dir.mkdir(parents=True, exist_ok=True)
         suffix = f"_run{run_number}" if run_number else ""
-        self.log_file = os.path.join(log_dir, f"{datetime.now(KST).strftime('%Y-%m-%d')}{suffix}.log")
+        log_path = log_dir / f"{datetime.now(KST).strftime('%Y-%m-%d')}{suffix}.log"
+        self.log_file = str(log_path)
 
         # 파일별로 독립된 로거 사용 (글로벌 싱글턴 충돌 방지)
-        logger_name = f"Convert.{os.path.abspath(self.log_file)}"
+        logger_name = f"Convert.{log_path.resolve()}"
         self.logger = logging.getLogger(logger_name)
         self.logger.setLevel(logging.INFO)
 

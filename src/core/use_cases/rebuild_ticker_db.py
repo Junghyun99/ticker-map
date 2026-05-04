@@ -5,19 +5,18 @@
 
 from __future__ import annotations
 
-from typing import Callable, Iterable, Mapping
+from typing import Iterable, Mapping
 
 from src.core.entities.ticker import Ticker
 from src.core.ports.archive import IArchiveExtractor
 from src.core.ports.artifact_writer import IArtifactWriter
 from src.core.ports.logger import ILogger
+from src.core.ports.normalizer import Normalizer
 from src.core.ports.notifier import INotifier
 from src.core.ports.raw_parser import IRawParser
 from src.core.ports.raw_source import IRawSourceFetcher
 from src.core.ports.repository import ITickerRepository
 from src.core.sources import SourceSpec
-
-Normalizer = Callable[[Iterable[Mapping[str, object]]], list[Ticker]]
 
 
 class RebuildTickerDb:
