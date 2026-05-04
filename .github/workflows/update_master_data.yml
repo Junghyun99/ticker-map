@@ -1,6 +1,8 @@
 name: Update Master Data and Tickers DB
 
 on:
+  schedule:
+    - cron: '0 0 1 * *'
   workflow_dispatch:
 
 permissions:
