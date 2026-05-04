@@ -39,3 +39,13 @@ def get_ticker_info(ticker: str, db_path: str = DEFAULT_DB_PATH) -> Optional[Dic
             
     except sqlite3.Error:
         return None
+
+def get_alias(ticker: str, db_path: str = DEFAULT_DB_PATH) -> Optional[str]:
+    """티커를 사용하여 해당 종목의 별칭(종목명)을 조회합니다."""
+    info = get_ticker_info(ticker, db_path)
+    return info["alias"] if info else None
+
+def get_exchange(ticker: str, db_path: str = DEFAULT_DB_PATH) -> Optional[str]:
+    """티커를 사용하여 해당 종목의 거래소 정보를 조회합니다."""
+    info = get_ticker_info(ticker, db_path)
+    return info["exchange"] if info else None
