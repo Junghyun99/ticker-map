@@ -1,5 +1,5 @@
 from pathlib import Path
-from src.core.schema import Ticker
+from src.core.entities.ticker import Ticker
 from src.infra.sqlite_repository import SqliteTickerRepository
 
 def test_sqlite_repo_flow(tmp_path):

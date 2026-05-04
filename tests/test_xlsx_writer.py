@@ -1,6 +1,6 @@
 import pandas as pd
 from unittest.mock import MagicMock
-from src.core.schema import Ticker
+from src.core.entities.ticker import Ticker
 from src.infra.xlsx_writer import XlsxArtifactWriter
 
 def test_xlsx_writer_output(tmp_path):

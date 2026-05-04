@@ -1,8 +1,7 @@
 """tickers.db SQLite CRUD 캡슐화.
 
-다운로더가 정규화한 :class:`Ticker` 객체를 그대로 받아 적재한다.
-거래소별 변환 로직은 다운로더에 있고, xlsx 산출물은 별도 어댑터가 담당하므로
-이 모듈은 단순 적재만 책임진다.
+core 의 ``Ticker`` 도메인 객체를 받아 적재한다. SQL 상수도 이 모듈이 들고 있어
+core 는 SQL 을 모르게 한다.
 """
 
 from __future__ import annotations
@@ -12,13 +11,26 @@ from dataclasses import astuple
 from pathlib import Path
 from typing import Iterable
 
-from src.core.interfaces import ITickerRepository
-from src.core.schema import (
-    CREATE_TABLE_SQL,
-    DROP_TABLE_SQL,
-    INSERT_SQL,
-    TABLE_NAME,
-    Ticker,
+from src.core.entities.ticker import COLUMNS, Ticker
+from src.core.ports.repository import ITickerRepository
+
+TABLE_NAME = "tickers"
+
+CREATE_TABLE_SQL = f"""
+CREATE TABLE {TABLE_NAME} (
+    ticker     TEXT PRIMARY KEY,
+    exchange   TEXT NOT NULL,
+    alias      TEXT,
+    asset_type TEXT NOT NULL,
+    currency   TEXT NOT NULL
+);
+""".strip()
+
+DROP_TABLE_SQL = f"DROP TABLE IF EXISTS {TABLE_NAME};"
+
+INSERT_SQL = (
+    f"INSERT INTO {TABLE_NAME} ({', '.join(COLUMNS)}) "
+    f"VALUES ({', '.join('?' * len(COLUMNS))})"
 )
 
 
