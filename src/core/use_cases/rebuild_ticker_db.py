@@ -42,6 +42,17 @@ class RebuildTickerDb:
 
     def execute(self, sources: Iterable[SourceSpec]) -> int:
         self.repo.reset_schema()
+        all_tickers: list[Ticker] = []
+        for s in sources:
+            self.logger.info(f"[download] {s.url}")
+            archive = self.fetcher.fetch(s.url)
+            content = self.extractor.extract(archive, s.archive_suffix)
+            rows = self.parsers[s.parser_kind].parse(content, s.slug)
+            tickers = self.normalizers[s.normalizer_kind](rows)
+            self.logger.info(f"[normalize] {s.slug} ({len(tickers)} rows)")
+            self.xlsx_writer.write(s.slug, tickers)
+            all_tickers.extend(tickers)
+
         n = self.repo.insert_many(all_tickers)
         self.logger.info(f"[insert] inserted: {n}")
 
