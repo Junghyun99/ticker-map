@@ -17,7 +17,7 @@ from src.infra.kst_logger import KstLogger
 from src.infra.overseas_cod_parser import OverseasCodParser
 from src.infra.slack_notifier import SlackNotifier
 from src.infra.sqlite_repository import SqliteTickerRepository
-from src.infra.xlsx_writer import XlsxArtifactWriter
+from src.infra.csv_writer import CsvArtifactWriter
 from src.infra.zip_extractor import ZipExtractor
 
 
@@ -36,7 +36,7 @@ def main() -> None:
             "overseas": normalize_overseas,
         },
         repo=SqliteTickerRepository(config.DB_PATH),
-        xlsx_writer=XlsxArtifactWriter(config.DATA_PATH, logger),
+        artifact_writer=CsvArtifactWriter(config.DATA_PATH, logger),
         logger=logger,
         notifier=notifier,
     )

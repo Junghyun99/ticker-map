@@ -27,7 +27,7 @@ class RebuildTickerDb:
         parsers: Mapping[str, IRawParser],
         normalizers: Mapping[str, Normalizer],
         repo: ITickerRepository,
-        xlsx_writer: IArtifactWriter,
+        artifact_writer: IArtifactWriter,
         logger: ILogger,
         notifier: INotifier,
     ) -> None:
@@ -36,7 +36,7 @@ class RebuildTickerDb:
         self.parsers = parsers
         self.normalizers = normalizers
         self.repo = repo
-        self.xlsx_writer = xlsx_writer
+        self.artifact_writer = artifact_writer
         self.logger = logger
         self.notifier = notifier
 
@@ -50,7 +50,7 @@ class RebuildTickerDb:
             rows = self.parsers[s.parser_kind].parse(content, s.slug)
             tickers = self.normalizers[s.normalizer_kind](rows)
             self.logger.info(f"[normalize] {s.slug} ({len(tickers)} rows)")
-            self.xlsx_writer.write(s.slug, tickers)
+            self.artifact_writer.write(s.slug, tickers)
             all_tickers.extend(tickers)
 
         n = self.repo.insert_many(all_tickers)
