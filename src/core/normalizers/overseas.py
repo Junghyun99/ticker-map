@@ -22,10 +22,11 @@ def normalize_overseas(rows: Iterable[Mapping[str, Any]]) -> list[Ticker]:
         currency = r.get("currency")
         if not symbol or not exchange or not currency or sectype not in OVERSEAS_ASSET_TYPE_MAP:
             continue
+        korea_name = r.get("Korea name")
         out.append(Ticker(
             ticker=symbol,
             exchange=exchange,
-            alias=symbol,
+            alias=korea_name if korea_name else symbol,
             asset_type=OVERSEAS_ASSET_TYPE_MAP[sectype],
             currency=currency,
         ))

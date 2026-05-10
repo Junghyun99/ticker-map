@@ -58,15 +58,17 @@ def test_normalize_kosdaq_filters_invalid_rows():
 
 def test_normalize_overseas_basic():
     rows = [
-        {"Symbol": "AAPL", "Exchange code": "NAS", SECTYPE_COL: 2, "currency": "USD"},
+        {"Symbol": "AAPL", "Exchange code": "NAS", SECTYPE_COL: 2, "currency": "USD", "Korea name": "애플"},
         {"Symbol": "QQQ", "Exchange code": "NAS", SECTYPE_COL: 3, "currency": "USD"},
     ]
     out = normalize_overseas(rows)
     assert len(out) == 2
     assert out[0].ticker == "AAPL"
-    assert out[0].alias == "AAPL"
+    assert out[0].alias == "애플"
     assert out[0].asset_type == "Stock"
     assert out[0].exchange == "NAS"
+    assert out[1].ticker == "QQQ"
+    assert out[1].alias == "QQQ"
     assert out[1].asset_type == "ETF"
 
 
