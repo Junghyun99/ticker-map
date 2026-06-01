@@ -137,7 +137,7 @@
 018310,KQ,삼목에스폼,Stock,KRW
 018620,KQ,우진비앤지,Stock,KRW
 018680,KQ,서울제약,Stock,KRW
-018700,KQ,바른손,Stock,KRW
+018700,KQ,졸스,Stock,KRW
 019010,KQ,베뉴지,Stock,KRW
 019210,KQ,와이지-원,Stock,KRW
 019540,KQ,일지테크,Stock,KRW
@@ -469,7 +469,7 @@
 053950,KQ,경남제약,Stock,KRW
 053980,KQ,오상자이엘,Stock,KRW
 054040,KQ,한국컴퓨터,Stock,KRW
-054050,KQ,농우바이오,Stock,KRW
+054050,KQ,NH농우바이오,Stock,KRW
 054090,KQ,삼진엘앤디,Stock,KRW
 054180,KQ,메디콕스,Stock,KRW
 054210,KQ,이랜텍,Stock,KRW
@@ -648,7 +648,7 @@
 078350,KQ,한양디지텍,Stock,KRW
 078590,KQ,휴림에이텍,Stock,KRW
 078600,KQ,대주전자재료,Stock,KRW
-078860,KQ,스테이지원엔터,Stock,KRW
+078860,KQ,아이오케이이엔엠,Stock,KRW
 078890,KQ,가온그룹,Stock,KRW
 079000,KQ,와토스코리아,Stock,KRW
 079170,KQ,한창산업,Stock,KRW
@@ -768,7 +768,7 @@
 094840,KQ,슈프리마에이치큐,Stock,KRW
 094850,KQ,참좋은여행,Stock,KRW
 094860,KQ,네오리진,Stock,KRW
-094940,KQ,푸른기술,Stock,KRW
+094940,KQ,푸른로보틱스,Stock,KRW
 094970,KQ,제이엠티,Stock,KRW
 095190,KQ,신화프리텍,Stock,KRW
 095270,KQ,웨이브일렉트로,Stock,KRW
@@ -954,7 +954,6 @@
 138080,KQ,오이솔루션,Stock,KRW
 138360,KQ,앤로보틱스,Stock,KRW
 138610,KQ,나이벡,Stock,KRW
-139050,KQ,BF랩스,Stock,KRW
 139670,KQ,키네마스터,Stock,KRW
 140070,KQ,서플러스글로벌,Stock,KRW
 140410,KQ,메지온,Stock,KRW
@@ -1143,7 +1142,6 @@
 217330,KQ,싸이토젠,Stock,KRW
 217480,KQ,에스디생명공학,Stock,KRW
 217500,KQ,러셀,Stock,KRW
-217620,KQ,선샤인푸드,Stock,KRW
 217730,KQ,강스템바이오텍,Stock,KRW
 217820,KQ,원익피앤이,Stock,KRW
 218150,KQ,미래생명자원,Stock,KRW
@@ -1267,7 +1265,7 @@
 260970,KQ,에스앤디,Stock,KRW
 261200,KQ,덴티스,Stock,KRW
 261520,KQ,이지스,Stock,KRW
-261780,KQ,차백신연구소,Stock,KRW
+261780,KQ,아리바이오랩,Stock,KRW
 262260,KQ,에이프로,Stock,KRW
 262840,KQ,아이퀘스트,Stock,KRW
 263020,KQ,디케이앤디,Stock,KRW
@@ -1320,6 +1318,7 @@
 285800,KQ,진영,Stock,KRW
 286750,KQ,나노실리칸첨단소재,Stock,KRW
 287840,KQ,인투셀,Stock,KRW
+288180,KQ,케이피항공산업,Stock,KRW
 288330,KQ,파라택시스코리아,Stock,KRW
 288620,KQ,에스프리즘,Stock,KRW
 288980,KQ,모아데이타,Stock,KRW
@@ -1649,6 +1648,7 @@
 438700,KQ,버넥트,Stock,KRW
 439090,KQ,마녀공장,Stock,KRW
 439580,KQ,블루엠텍,Stock,KRW
+439960,KQ,코스모로보틱스,Stock,KRW
 440110,KQ,파두,Stock,KRW
 440290,KQ,HB인베스트먼트,Stock,KRW
 440320,KQ,오픈놀,Stock,KRW
@@ -1679,7 +1679,6 @@
 452400,KQ,이닉스,Stock,KRW
 452430,KQ,사피엔반도체,Stock,KRW
 452450,KQ,피아이이,Stock,KRW
-452980,KQ,신한제11호스팩,Stock,KRW
 453450,KQ,그리드위즈,Stock,KRW
 453860,KQ,에이에스텍,Stock,KRW
 455180,KQ,케이지에이,Stock,KRW
@@ -1702,7 +1701,6 @@
 460940,KQ,피앤에스로보틱스,Stock,KRW
 461030,KQ,아이엠비디엑스,Stock,KRW
 461300,KQ,아이스크림미디어,Stock,KRW
-462020,KQ,에이치엠씨제6호스팩,Stock,KRW
 462310,KQ,뉴키즈온,Stock,KRW
 462350,KQ,이노스페이스,Stock,KRW
 462510,KQ,라메디텍,Stock,KRW
@@ -1722,7 +1720,6 @@
 466100,KQ,클로봇,Stock,KRW
 466410,KQ,사이냅소프트,Stock,KRW
 466690,KQ,키움히어로제1호스팩,Stock,KRW
-466910,KQ,엔에이치스팩30호,Stock,KRW
 467930,KQ,IBKS제23호스팩,Stock,KRW
 468530,KQ,프로티나,Stock,KRW
 468760,KQ,유진스팩10호,Stock,KRW
@@ -1764,6 +1761,7 @@
 477380,KQ,미래에셋비전스팩4호,Stock,KRW
 477470,KQ,미래에셋비전스팩5호,Stock,KRW
 477760,KQ,DB금융스팩12호,Stock,KRW
+477850,KQ,마키나락스,Stock,KRW
 478110,KQ,이베스트스팩6호,Stock,KRW
 478340,KQ,나라스페이스테크놀로지,Stock,KRW
 478390,KQ,KB제29호스팩,Stock,KRW
@@ -1784,6 +1782,7 @@
 486630,KQ,KB제30호스팩,Stock,KRW
 486990,KQ,노타,Stock,KRW
 487360,KQ,신한제14호스팩,Stock,KRW
+487580,KQ,폴레드,Stock,KRW
 487720,KQ,키움제10호스팩,Stock,KRW
 487830,KQ,신한제15호스팩,Stock,KRW
 488060,KQ,유진스팩11호,Stock,KRW
