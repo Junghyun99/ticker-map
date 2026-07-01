@@ -18,6 +18,7 @@
 0015G0,KQ,그린광학,Stock,KRW
 0015N0,KQ,아로마티카,Stock,KRW
 0015S0,KQ,페스카로,Stock,KRW
+0017J0,KQ,세미티에스,Stock,KRW
 001810,KQ,무림SP,Stock,KRW
 001840,KQ,이화공영,Stock,KRW
 002230,KQ,피에스텍,Stock,KRW
@@ -29,6 +30,7 @@
 003380,KQ,하림지주,Stock,KRW
 0037T0,KQ,KB제32호스팩,Stock,KRW
 003800,KQ,에이스침대,Stock,KRW
+0039P0,KQ,매드업,Stock,KRW
 0041B0,KQ,교보18호스팩,Stock,KRW
 0041J0,KQ,엘에스스팩1호,Stock,KRW
 0041L0,KQ,하나35호스팩,Stock,KRW
@@ -92,6 +94,7 @@
 011370,KQ,서한,Stock,KRW
 011560,KQ,세보엠이씨,Stock,KRW
 0115H0,KQ,삼성스팩13호,Stock,KRW
+0117P0,KQ,피스피스스튜디오,Stock,KRW
 012210,KQ,삼미금속,Stock,KRW
 012340,KQ,뉴인텍,Stock,KRW
 012620,KQ,원일특강,Stock,KRW
@@ -106,7 +109,8 @@
 0131D0,KQ,키움히어로제2호스팩,Stock,KRW
 0132G0,KQ,교보20호스팩,Stock,KRW
 013310,KQ,아진산업,Stock,KRW
-013720,KQ,THE CUBE&,Stock,KRW
+0134X0,KQ,대신밸런스제20호스팩,Stock,KRW
+013720,KQ,청보,Stock,KRW
 013810,KQ,스페코,Stock,KRW
 013990,KQ,아가방컴퍼니,Stock,KRW
 014100,KQ,메디앙스,Stock,KRW
@@ -121,6 +125,8 @@
 015750,KQ,성우하이텍,Stock,KRW
 016100,KQ,리더스코스메틱,Stock,KRW
 016250,KQ,SGC E&C,Stock,KRW
+0164H0,KQ,한국제16호스팩,Stock,KRW
+0165X0,KQ,메리츠제2호스팩,Stock,KRW
 016600,KQ,큐캐피탈,Stock,KRW
 016670,KQ,디모아,Stock,KRW
 016790,KQ,현대사료,Stock,KRW
@@ -488,7 +494,7 @@
 054950,KQ,제이브이엠,Stock,KRW
 056080,KQ,유진로봇,Stock,KRW
 056090,KQ,시지메드텍,Stock,KRW
-056190,KQ,에스에프에이,Stock,KRW
+056190,KQ,SFA,Stock,KRW
 056360,KQ,코위버,Stock,KRW
 056700,KQ,신화인터텍,Stock,KRW
 056730,KQ,CNT85,Stock,KRW
@@ -745,7 +751,7 @@
 091580,KQ,상신이디피,Stock,KRW
 091590,KQ,남화토건,Stock,KRW
 091700,KQ,파트론,Stock,KRW
-091970,KQ,나노캠텍,Stock,KRW
+091970,KQ,LSK아이로봇,Stock,KRW
 092040,KQ,아미코젠,Stock,KRW
 092070,KQ,디엔에프,Stock,KRW
 092130,KQ,이크레더블,Stock,KRW
@@ -988,6 +994,7 @@
 153460,KQ,네이블,Stock,KRW
 153490,KQ,우리이앤엘하루틴,Stock,KRW
 153710,KQ,옵티팜,Stock,KRW
+153890,KQ,져스텍,Stock,KRW
 154030,KQ,아시아종묘,Stock,KRW
 154040,KQ,다산솔루에타,Stock,KRW
 155650,KQ,와이엠씨,Stock,KRW
@@ -1157,7 +1164,7 @@
 221840,KQ,하이즈항공,Stock,KRW
 221980,KQ,케이디켐,Stock,KRW
 222040,KQ,코스맥스엔비티,Stock,KRW
-222080,KQ,씨아이에스,Stock,KRW
+222080,KQ,SFA넥셀,Stock,KRW
 222110,KQ,팬젠,Stock,KRW
 222160,KQ,NPX,Stock,KRW
 222420,KQ,쎄노텍,Stock,KRW
@@ -1188,7 +1195,6 @@
 229000,KQ,젠큐릭스,Stock,KRW
 230240,KQ,에치에프알,Stock,KRW
 230360,KQ,에코마케팅,Stock,KRW
-230980,KQ,비유테크놀러지,Stock,KRW
 232140,KQ,와이씨,Stock,KRW
 232680,KQ,라온로보틱스,Stock,KRW
 232830,KQ,아이티센피엔에스,Stock,KRW
@@ -1518,7 +1524,7 @@
 365340,KQ,성일하이텍,Stock,KRW
 365590,KQ,하이딥,Stock,KRW
 365900,KQ,브이씨,Stock,KRW
-366030,KQ,공구우먼,Stock,KRW
+366030,KQ,나인앤컴퍼니,Stock,KRW
 367000,KQ,플래티어,Stock,KRW
 368600,KQ,아이씨에이치,Stock,KRW
 368770,KQ,파이버프로,Stock,KRW
@@ -1669,7 +1675,6 @@
 450950,KQ,아스테라시스,Stock,KRW
 451220,KQ,아이엠티,Stock,KRW
 451250,KQ,삐아,Stock,KRW
-451700,KQ,엔에이치스팩29호,Stock,KRW
 451760,KQ,컨텍,Stock,KRW
 452160,KQ,제이엔비,Stock,KRW
 452190,KQ,한빛레이저,Stock,KRW
@@ -1710,11 +1715,9 @@
 463480,KQ,모티브링크,Stock,KRW
 464080,KQ,에스오에스랩,Stock,KRW
 464280,KQ,티디에스팜,Stock,KRW
-464440,KQ,한국제13호스팩,Stock,KRW
 464490,KQ,쿼드메디슨,Stock,KRW
 464500,KQ,아이언디바이스,Stock,KRW
 464580,KQ,닷밀,Stock,KRW
-464680,KQ,KB제27호스팩,Stock,KRW
 465320,KQ,교보15호스팩,Stock,KRW
 465480,KQ,인스피언,Stock,KRW
 466100,KQ,클로봇,Stock,KRW
@@ -1743,6 +1746,7 @@
 474650,KQ,링크솔루션,Stock,KRW
 474660,KQ,신한제12호스팩,Stock,KRW
 474930,KQ,신한제13호스팩,Stock,KRW
+475040,KQ,스트라드비젼,Stock,KRW
 475230,KQ,엔알비,Stock,KRW
 475240,KQ,하나32호스팩,Stock,KRW
 475250,KQ,하나33호스팩,Stock,KRW
