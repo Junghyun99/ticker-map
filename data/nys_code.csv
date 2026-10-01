@@ -1,7 +1,7 @@
 ﻿ticker,exchange,alias,asset_type,currency
 A,NYS,애질런트 테크놀로지스,Stock,USD
 AA,NYS,알코아,Stock,USD
-AAC,NYS,ARES ACQUISITION CORPORATION III,Stock,USD
+AAC,NYS,아레스 애퀴지션 III,Stock,USD
 AAC/UN,NYS,아레스 애퀴지션 III 유닛 1/10 워런트,Stock,USD
 AADX,NYS,어플라이드 에어로스페이스 & 디펜스,Stock,USD
 AAMI,NYS,아카디언 에셋 매니지먼트,Stock,USD
@@ -189,7 +189,7 @@ ARE,NYS,알렉산드리아 리얼 에스테이트 에퀴티스,Stock,USD
 ARES,NYS,아레스 매니지먼트,Stock,USD
 ARES/B,NYS,아레스 매니지먼트 우선주 B(6.750% 의무전환),Stock,USD
 ARI,NYS,아폴로 커머셜 리얼에스테이트 파이낸스,Stock,USD
-ARIS,NYS,아리스 워터 솔루션스,Stock,USD
+ARIS,NYS,아리스 마이닝,Stock,USD
 ARL,NYS,아메리칸 리얼티 인베스터스,Stock,USD
 ARLO,NYS,아를로 테크놀로지스,Stock,USD
 ARMK,NYS,아라마크,Stock,USD
@@ -204,6 +204,7 @@ ASAN,NYS,아사나,Stock,USD
 ASB,NYS,어소시에이티드 뱅크코프,Stock,USD
 ASB/E,NYS,어소시에이티드 뱅크코프 우선주 E(5.875%),Stock,USD
 ASB/F,NYS,어소시에이티드 뱅크코프 우선주 F(5.625%),Stock,USD
+ASBH,NYS,아메리칸 세이빙스 뱅크,Stock,USD
 ASC,NYS,아드모어 시핑,Stock,USD
 ASG,NYS,LIBERTY ALL STAR GROWTH,ETF,USD
 ASGI,NYS,ABERDEEN STANDARD GLOBAL INFRA,ETF,USD
@@ -232,7 +233,6 @@ AUB/A,NYS,애틀랜틱 유니언 뱅크셰어스 우선주(6.875%),Stock,USD
 AUNA,NYS,아우나,Stock,USD
 AVA,NYS,아비스타,Stock,USD
 AVAL,NYS,그루포 아발 악시오네스 이 발로레스(ADR),Stock,USD
-AVB,NYS,아발론베이 커뮤니티스,Stock,USD
 AVBC,NYS,어비디아 뱅코프,Stock,USD
 AVD,NYS,아메리칸 뱅가드,Stock,USD
 AVEX,NYS,에이벡스,Stock,USD
@@ -246,8 +246,6 @@ AWK,NYS,아메리칸 워터 웍스,Stock,USD
 AWP,NYS,ABERDEEN GLOBAL PREMIER PROPERTY,ETF,USD
 AWR,NYS,아메리칸 스테이츠 워터,Stock,USD
 AX,NYS,액소스 파이낸셜,Stock,USD
-AXIA,NYS,악시아 에네르지아 스폰서드 ADR,Stock,USD
-AXIA/C,NYS,AXIA 스폰 ADS(우선주 C),Stock,USD
 AXP,NYS,아메리칸 엑스프레스,Stock,USD
 AXR,NYS,앰렙,Stock,USD
 AXS,NYS,액시스 캐피털 홀딩스,Stock,USD
@@ -286,7 +284,6 @@ BAX,NYS,박스터 인터내셔널,Stock,USD
 BB,NYS,블랙베리,Stock,USD
 BBAI,NYS,빅베어 AI 홀딩스,Stock,USD
 BBAR,NYS,BBVA 아르헨티나(ADR),Stock,USD
-BBBY,NYS,BED BATH BEYOND INC,Stock,USD
 BBD,NYS,방쿠 브라데스쿠 우선주(ADR),Stock,USD
 BBDC,NYS,베어링스 BDC,Stock,USD
 BBDO,NYS,방쿠 브라데스쿠(ADR),Stock,USD
@@ -471,7 +468,6 @@ BWIV,NYS,블루 워터 애퀴지션 IV,Stock,USD
 BWIV/UN,NYS,BLUE WATER ACQUISITION CORP IV UNIT 1 ORD CL A & 1/2 WT,Stock,USD
 BWLP,NYS,BW LPG,Stock,USD
 BWMX,NYS,베터웨어 드 멕시코,Stock,USD
-BWNB,NYS,밥콕 앤드 윌콕스 엔터프라이지스 선순위채권(2026-12-31 6.500%),Stock,USD
 BWXT,NYS,BWX 테크놀로지스,Stock,USD
 BX,NYS,블랙스톤,Stock,USD
 BXC,NYS,블루링스 홀딩스,Stock,USD
@@ -906,7 +902,6 @@ EQH,NYS,에퀴터블 홀딩스,Stock,USD
 EQH/A,NYS,에퀴터블 홀딩스 우선주 A(5.250%),Stock,USD
 EQH/C,NYS,에퀴터블 홀딩스 우선주 C,Stock,USD
 EQNR,NYS,에퀴노르(ADR),Stock,USD
-EQR,NYS,에퀴티 레지덴셜,Stock,USD
 EQS,NYS,에쿼스 토털 리턴,Stock,USD
 EQT,NYS,EQT,Stock,USD
 ERO,NYS,에로 코퍼,Stock,USD
@@ -974,7 +969,6 @@ FCN,NYS,FTI 컨설팅,Stock,USD
 FCPT,NYS,포 코너스 프라퍼티 트러스트,Stock,USD
 FCRS,NYS,퓨처크레스트 인수,Stock,USD
 FCRS/UN,NYS,퓨처크레스트 애퀴지션 유닛,Stock,USD
-FCT,NYS,FIRST TRUST SENIOR FLOATING RATE INCOME II,ETF,USD
 FCX,NYS,프리포트 맥모란,Stock,USD
 FDS,NYS,팩트셋 리서치 시스템스,Stock,USD
 FDX,NYS,페덱스,Stock,USD
@@ -1260,6 +1254,7 @@ HNGE,NYS,힌지 헬스,Stock,USD
 HNI,NYS,HNI,Stock,USD
 HOG,NYS,할리 데이비슨,Stock,USD
 HOMB,NYS,홈 뱅크셰어스,Stock,USD
+HOS,NYS,혼벡 오프쇼어 서비스,Stock,USD
 HOV,NYS,호브내니언 엔터프라이지스,Stock,USD
 HP,NYS,헬머리치 앤드 페인,Stock,USD
 HPE,NYS,휴렛 팩커드 엔터프라이즈,Stock,USD
@@ -1296,6 +1291,7 @@ HVT/A,NYS,하버티 퍼니처 A,Stock,USD
 HWM,NYS,하우멧 에어로스페이스,Stock,USD
 HXL,NYS,헥셀,Stock,USD
 HY,NYS,하이스터 예일,Stock,USD
+HYAC/UN,NYS,헤이메이커 애퀴지션 4 유닛,Stock,USD
 HYBX,NYS,TCW HIGH YIELD BOND,ETF,USD
 HYI,NYS,WESTERN ASSET HIGH YIELD DEFINED OPPORTUNITY,ETF,USD
 HYT,NYS,BLACKROCK CORPORATE HIGH YIELD,ETF,USD
@@ -1365,6 +1361,7 @@ ITGR,NYS,인티거 홀딩스,Stock,USD
 ITT,NYS,ITT,Stock,USD
 ITUB,NYS,이타우 우니방쿠 홀딩스(ADR),Stock,USD
 ITW,NYS,일리노이 툴 웍스,Stock,USD
+IVAI,NYS,IVES ULTRA AI OPPORTUNITIES INC,Stock,USD
 IVR,NYS,인베스코 모기지 캐피털,Stock,USD
 IVR/C,NYS,인베스코 모기지 캐피털 우선주 C(7.500% 누적 상환),Stock,USD
 IVT,NYS,인벤트러스트 프라퍼티스,Stock,USD
@@ -1438,6 +1435,7 @@ KFRC,NYS,케이포스,Stock,USD
 KFY,NYS,콘 페리,Stock,USD
 KGC,NYS,킨로스 골드,Stock,USD
 KGS,NYS,코디악 가스 서비시스,Stock,USD
+KHC,NYS,크래프트 하인즈,Stock,USD
 KIM,NYS,킴코 리얼티,Stock,USD
 KIM/L,NYS,킴코 리얼티 우선주 L(5.125% 누적 상환),Stock,USD
 KIM/M,NYS,킴코 리얼티 우선주 M(5.250% 누적 상환),Stock,USD
@@ -1499,12 +1497,12 @@ LAZ,NYS,라자드,Stock,USD
 LB,NYS,랜드브리지,Stock,USD
 LBRT,NYS,리버티 에너지,Stock,USD
 LCII,NYS,LCI 인더스트리스,Stock,USD
+LCIV,NYS,LOGAN CAPITAL INTERNATIONAL ETF,ETF,USD
 LCLN,NYS,링컨 인터내셔널,Stock,USD
 LDI,NYS,론디포,Stock,USD
 LDOS,NYS,레이도스 홀딩스,Stock,USD
 LDP,NYS,COHEN & STEERS LIMITED DURATION PREFERRED AND INCOME,ETF,USD
 LEA,NYS,리어,Stock,USD
-LEG,NYS,레겟 앤드 플랫,Stock,USD
 LEN,NYS,레나,Stock,USD
 LEN/B,NYS,레나 B,Stock,USD
 LEO,NYS,BNY MELLON STRATEGIC MUNICIPALS,ETF,USD
@@ -1590,8 +1588,6 @@ MDA,NYS,MDA 스페이스,Stock,USD
 MDST,NYS,WESTWOOD SALIENT ENHANCED MIDSTREAM INCOME,ETF,USD
 MDT,NYS,메드트로닉,Stock,USD
 MDU,NYS,MDU 리소시스 그룹,Stock,USD
-MDV,NYS,모디브 인더스트리얼,Stock,USD
-MDV/A,NYS,모디브 인더스트리얼 우선주 A(7.375% 누적 상환),Stock,USD
 MEC,NYS,메이빌 엔지니어링,Stock,USD
 MED,NYS,메디패스트,Stock,USD
 MEGI,NYS,MAINSTAY CBRE GLOBAL INFRASTRUCTURE MEGATRENDS,ETF,USD
@@ -1728,6 +1724,7 @@ MUR,NYS,머피 오일,Stock,USD
 MUSA,NYS,머피 USA,Stock,USD
 MUSE,NYS,TCW MULTISECTOR CREDIT INCOME,ETF,USD
 MUX,NYS,매큐언,Stock,USD
+MVPA,NYS,MILLER VALUE PARTNERS APPRECIATION,ETF,USD
 MWA,NYS,뮬러 워터 프라덕츠,Stock,USD
 MX,NYS,매그나칩 세미컨덕터,Stock,USD
 MXE,NYS,MEXICO EQUITY & INCOME,ETF,USD
@@ -1840,7 +1837,6 @@ NSP,NYS,인스페리티,Stock,USD
 NTB,NYS,뱅크 오브 NT 버터필드 앤드 선,Stock,USD
 NTR,NYS,뉴트리엔,Stock,USD
 NTST,NYS,넷에스티리츠,Stock,USD
-NTZ,NYS,나투치(ADR),Stock,USD
 NU,NYS,누 홀딩스,Stock,USD
 NUE,NYS,뉴코,Stock,USD
 NUS,NYS,뉴스킨 엔터프라이즈,Stock,USD
@@ -2035,6 +2031,7 @@ PMT/C,NYS,페니맥 모기지 인베스트먼트 우선주 C(누적 상환),Stoc
 PMTU,NYS,페니맥 모기지 인베스트먼트 선순위채권(2028-09-30 8.500%),Stock,USD
 PMTV,NYS,페니맥 모기지 인베스트먼트 선순위채권(2030-02-15 9.000%),Stock,USD
 PMTW,NYS,페니맥 모기지 인베스트먼트 선순위채권(2030-06-15 9.000%),Stock,USD
+PNAQ,NYS,피너클 애퀴지션,Stock,USD
 PNAQ/UN,NYS,피너클 애퀴지션 유닛/권리,Stock,USD
 PNC,NYS,PNC 파이낸셜 서비시스,Stock,USD
 PNFP,NYS,피너클 파이낸셜 파트너스,Stock,USD
@@ -2184,7 +2181,6 @@ RLJ/A,NYS,RLJ 로징 트러스트 우선주 A(7.800% 누적 전환),Stock,USD
 RLTY,NYS,COHEN & STEERS REAL ESTATE OPPORTUNITIES AND INCOME,ETF,USD
 RLX,NYS,RLX 테크놀로지(ADR),Stock,USD
 RM,NYS,리저널 매니지먼트,Stock,USD
-RMAX,NYS,리맥스 홀딩스,Stock,USD
 RMD,NYS,레즈메드,Stock,USD
 RMI,NYS,RIVERNORTH OPPORTUNISTIC MUNICIPAL INCOME,ETF,USD
 RMM,NYS,RIVERNORTH MANAGED DURATION MUNICIPAL INCOME,ETF,USD
@@ -2245,7 +2241,7 @@ SAGU/UN,NYS,슈레야 애퀴지션 유닛/워런트/권리,Stock,USD
 SAH,NYS,소닉 오토모티브,Stock,USD
 SAJ,NYS,사라토가 인베스트먼트 일반채권(2027-10-31 8.000%),Stock,USD
 SAM,NYS,보스턴 비어,Stock,USD
-SAMO,NYS,SAMOS ENERGY ACQUISITION CORPORATION,Stock,USD
+SAMO,NYS,사모스 에너지 애퀴지션,Stock,USD
 SAMO/UN,NYS,사모스 에너지 애퀴지션 유닛 1/2 워런트,Stock,USD
 SAN,NYS,방코 산탄데르(ADR),Stock,USD
 SAP,NYS,SAP(ADR),Stock,USD
@@ -2282,7 +2278,7 @@ SCL,NYS,스테판,Stock,USD
 SCM,NYS,스텔러스 캐피털 인베스트먼트,Stock,USD
 SD,NYS,샌드리지 에너지,Stock,USD
 SDHC,NYS,스미스 더글러스 홈스,Stock,USD
-SDHY,NYS,PGIM SHORT DURATION HIGH YIELD OPPS,ETF,USD
+SDHY,NYS,PGIM SHORT DURATION HIGH YIELD OPPORTUNITIES,ETF,USD
 SDRL,NYS,시드릴,Stock,USD
 SE,NYS,SEA(ADR),Stock,USD
 SEAL/A,NYS,시피크 우선주 A(9.000% 누적 상환),Stock,USD
@@ -2584,7 +2580,6 @@ TVE,NYS,테네시 밸리 오소리티 우선주 A,Stock,USD
 TWI,NYS,타이탄 인터내셔널,Stock,USD
 TWLO,NYS,트윌리오,Stock,USD
 TWN,NYS,TAIWAN,ETF,USD
-TWO,NYS,투 하버스 인베스트먼트,Stock,USD
 TWO/A,NYS,투 하버스 인베스트먼트 우선주 A(8.125% 누적 상환),Stock,USD
 TWO/B,NYS,투 하버스 인베스트먼트 우선주 B(7.625% 누적 상환),Stock,USD
 TWO/C,NYS,투 하버스 인베스트먼트 우선주 C(7.250% 누적 상환),Stock,USD
@@ -2728,9 +2723,6 @@ WAL/A,NYS,웨스턴 얼라이언스 뱅코프 우선주 A(4.250%),Stock,USD
 WAT,NYS,워터스,Stock,USD
 WBI,NYS,워터브리지 인프라스트럭처,Stock,USD
 WBIY,NYS,WBI POWER FACTOR HIGH DIVIDEND,ETF,USD
-WBS,NYS,웹스터 파이낸셜,Stock,USD
-WBS/F,NYS,웹스터 파이낸셜 우선주 F(5.250%),Stock,USD
-WBS/G,NYS,웹스터 파이낸셜 우선주 G(6.500%),Stock,USD
 WBX,NYS,월박스,Stock,USD
 WCC,NYS,웨스코 인터내셔널,Stock,USD
 WCN,NYS,웨이스트 커넥션스,Stock,USD
@@ -2819,6 +2811,7 @@ XPRO,NYS,엑스프로 그룹 홀딩스,Stock,USD
 XRN,NYS,카이론 리얼 에스테이트,Stock,USD
 XRN/A,NYS,카이론 리얼 에스테이트 7.50% 누적 상환 우선주 A,Stock,USD
 XRN/B,NYS,카이론 리얼 에스테이트 8.00% 누적 상환 우선주 B,Stock,USD
+XTND,NYS,엑스텐드 AI 로보틱스,Stock,USD
 XXI,NYS,트웬티원 캐피탈,Stock,USD
 XYF,NYS,X 파이낸셜(ADR),Stock,USD
 XYL,NYS,자일럼,Stock,USD
